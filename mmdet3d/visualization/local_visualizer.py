@@ -314,7 +314,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
 
             line_set = geometry.LineSet.create_from_oriented_bounding_box(
                 box3d)
-            line_set.paint_uniform_color(np.array(bbox_color[i]) / 255.)
+            line_set.paint_uniform_color(np.array(bbox_color) / 255.)
             # draw bboxes on visualizer
             self.o3d_vis.add_geometry(line_set)
 

@@ -191,7 +191,29 @@ def create_groundtruth_database(dataset_class_name,
                     with_bbox_3d=True,
                     with_label_3d=True)
             ])
-
+    elif dataset_class_name == 'NuScenesDrivIngDataset':
+        dataset_cfg.update(
+            use_valid_flag=True,
+            data_prefix=dict(
+                pts='samples/middle_lidar', img='', sweeps='sweeps/middle_lidar'),
+            pipeline=[
+                dict(
+                    type='LoadPointsFromFile',
+                    coord_type='LIDAR',
+                    load_dim=5,
+                    use_dim=5),
+                dict(
+                    type='LoadPointsFromMultiSweeps',
+                    sweeps_num=10,
+                    load_dim=5,
+                    use_dim=[0, 1, 2, 3, 4],
+                    pad_empty_sweeps=True,
+                    remove_close=True),
+                dict(
+                    type='LoadAnnotations3D',
+                    with_bbox_3d=True,
+                    with_label_3d=True)
+            ])
     elif dataset_class_name == 'WaymoDataset':
         backend_args = None
         dataset_cfg.update(
