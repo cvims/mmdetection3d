@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/pointpillars_hv_fpn_nus-driving.py',
+    '../_base_/models/pointpillars_hv_nofpn_nus-driving.py',
     '../_base_/datasets/nus-driving-3d.py', '../_base_/schedules/schedule-2x_nuscenes-driving.py',
     '../_base_/default_runtime.py'
 ]

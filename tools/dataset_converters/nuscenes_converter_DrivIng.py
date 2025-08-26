@@ -45,9 +45,9 @@ def create_nuscenes_driving_infos(root_path,
     nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
     # from nuscenes.utils import splits
     splits = {
-        'train': ['di_night_2506'],
-        'val': ['di_night_2506'],
-        'test': ['di_night_2506']
+        'train': ['di_day_1706'],
+        'val': ['di_day_1706'],
+        'test': ['di_day_1706']
     }
     available_vers = ['v1.0-trainval', 'v1.0-test', 'v1.0-mini']
     assert version in available_vers

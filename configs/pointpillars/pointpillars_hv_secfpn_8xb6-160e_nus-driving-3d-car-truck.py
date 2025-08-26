@@ -1,40 +1,41 @@
-# If point cloud range is changed, the models should also change their point
-# cloud range accordingly
-point_cloud_range = [-50, -50, -5, 50, 50, 3]
-# Using calibration info convert the Lidar-coordinate point cloud range to the
-# ego-coordinate point cloud range could bring a little promotion in nuScenes.
-# point_cloud_range = [-50, -50.8, -5, 50, 49.2, 3]
-# For nuScenes we usually do 10-class detection
-# class_names = [
-#     'car', 'truck', 'trailer', 'bus', 'construction_vehicle', 'bicycle',
-#     'motorcycle', 'pedestrian', 'traffic_cone', 'barrier'
-# ]
-class_names = [
-    'car', 'truck'
-]
-
-metainfo = dict(classes=class_names)
+# model settings
+_base_ = './pointpillars_hv_secfpn_8xb6-160e_nus-driving-3d-3class.py'
+# dataset settings
 dataset_type = 'NuScenesDrivIngDataset'
 data_root = 'data/nuscenes-driving/'
-# Input modality for nuScenes dataset, this is consistent with the submission
-# format which requires the information in input_modality.
+class_names = ['car', 'truck']
+metainfo = dict(classes=class_names)
+backend_args = None
+
 input_modality = dict(use_lidar=True, use_camera=False)
 data_prefix = dict(pts='samples/middle_lidar', img='', sweeps='sweeps/middle_lidar')
 
-# Example to use different file client
-# Method 1: simply set the data root and let the file I/O module
-# automatically infer from prefix (not support LMDB and Memcache yet)
+point_cloud_range = [-50, -50, -5, 50, 50, 3]
 
-# data_root = 's3://openmmlab/datasets/detection3d/nuscenes/'
-
-# Method 2: Use backend_args, file_client_args in versions before 1.1.0
-# backend_args = dict(
-#     backend='petrel',
-#     path_mapping=dict({
-#         './data/': 's3://openmmlab/datasets/detection3d/',
-#          'data/': 's3://openmmlab/datasets/detection3d/'
-#      }))
-backend_args = None
+model = dict(
+    bbox_head=dict(
+        type='Anchor3DHead',
+        num_classes=2,
+        anchor_generator=dict(
+            _delete_=True,
+            type='AlignedAnchor3DRangeGenerator',
+            ranges=[[-50, -50, -5, 50, 50, 3]],
+            sizes=[[3.9, 1.6, 1.56], [6.0, 2.0, 3]],
+            rotations=[0, 1.57],
+            reshape_out=True)),
+    # model training and testing settings
+    train_cfg=dict(
+        _delete_=True,
+        assigner=dict(
+            type='Max3DIoUAssigner',
+            iou_calculator=dict(type='BboxOverlapsNearest3D'),
+            pos_iou_thr=0.6,
+            neg_iou_thr=0.45,
+            min_pos_iou=0.45,
+            ignore_iof_thr=-1),
+        allowed_border=0,
+        pos_weight=-1,
+        debug=False))
 
 train_pipeline = [
     dict(
@@ -108,10 +109,9 @@ eval_pipeline = [
     dict(type='Pack3DDetInputs', keys=['points'])
 ]
 train_dataloader = dict(
-    batch_size=8,
-    num_workers=16,
+    batch_size=4,
+    num_workers=4,
     persistent_workers=True,
-    pin_memory=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type=dataset_type,
@@ -128,7 +128,7 @@ train_dataloader = dict(
         backend_args=backend_args))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=4,
+    num_workers=1,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -145,7 +145,7 @@ test_dataloader = dict(
         backend_args=backend_args))
 val_dataloader = dict(
     batch_size=1,
-    num_workers=4,
+    num_workers=1,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
