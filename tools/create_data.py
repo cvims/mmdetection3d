@@ -304,7 +304,8 @@ def semantickitti_data_prep(info_prefix, out_dir):
 
 parser = argparse.ArgumentParser(description='Data converter arg parser')
 # parser.add_argument('dataset', metavar='nuscenes', help='name of the dataset')
-parser.add_argument('--dataset', default='nuscenes-driving', help='name of the dataset')
+parser.add_argument('dataset', metavar='nuscenes-driving', help='name of the dataset')
+# parser.add_argument('--dataset', default='nuscenes-driving', help='name of the dataset')
 parser.add_argument(
     '--root-path',
     type=str,

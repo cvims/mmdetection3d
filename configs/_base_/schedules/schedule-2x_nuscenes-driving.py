@@ -2,15 +2,13 @@
 # This schedule is mainly used by models on nuScenes dataset
 lr = 0.001
 optim_wrapper = dict(
-    type='AmpOptimWrapper',
+    type='OptimWrapper',
     optimizer=dict(type='AdamW', lr=lr, weight_decay=0.01),
     # max_norm=10 is better for SECOND
-    clip_grad=dict(max_norm=35, norm_type=2),
-    dtype='float16'
-)
+    clip_grad=dict(max_norm=35, norm_type=2))
 
 # training schedule for 2x
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=24, val_interval=24)
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=500, val_interval=250)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -34,5 +32,5 @@ param_scheduler = [
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
-#   - `base_batch_size` = (1 GPUs) x (8 samples per GPU).
+#   - `base_batch_size` = (2 GPUs) x (4 samples per GPU).
 auto_scale_lr = dict(enable=False, base_batch_size=8)

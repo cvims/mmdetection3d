@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# NCCL debugging & safety
+export NCCL_DEBUG=INFO
+export NCCL_IB_DISABLE=1          # disable InfiniBand if not used
+export NCCL_P2P_LEVEL=SYS         # use system-level peer-to-peer
+export NCCL_P2P_DISABLE=1
+export NCCL_SOCKET_IFNAME=lo,docker0,eth0  # restrict network interfaces
+export OMP_NUM_THREADS=4          # avoid CPU oversubscription
+export MKL_NUM_THREADS=4
+
+export WORLD_SIZE=2
+
 CONFIG=$1
 GPUS=$2
 NNODES=${NNODES:-1}
@@ -8,7 +19,7 @@ PORT=${PORT:-29500}
 MASTER_ADDR=${MASTER_ADDR:-"127.0.0.1"}
 
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
-python -m torch.distributed.launch \
+torchrun \
     --nnodes=$NNODES \
     --node_rank=$NODE_RANK \
     --master_addr=$MASTER_ADDR \

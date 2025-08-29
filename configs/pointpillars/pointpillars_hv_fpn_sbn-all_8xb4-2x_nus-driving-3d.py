@@ -9,16 +9,16 @@ _base_ = [
 # interval to be 24. Please change the interval accordingly if you do not
 # use a default schedule.
 # Check '../_base_/schedules/schedule-2x.py' (if set in _base_ varialbe) for available parameters to change.
-train_cfg = dict(val_interval=10)
+train_cfg = dict(val_interval=250)
 
 
 # test
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
     # logger=dict(type='LoggerHook', interval=50),
-    logger=dict(type='LoggerHook', interval=10, log_metric_by_epoch=False),
+    logger=dict(type='LoggerHook', interval=1, log_metric_by_epoch=True),
     param_scheduler=dict(type='ParamSchedulerHook'),
-    checkpoint=dict(type='CheckpointHook', interval=1, by_epoch=True),
+    checkpoint=dict(type='CheckpointHook', interval=10, by_epoch=True),
     sampler_seed=dict(type='DistSamplerSeedHook'),
     visualization=dict(type='Det3DVisualizationHook')
 )

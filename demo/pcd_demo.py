@@ -10,9 +10,17 @@ from mmdet3d.apis import LidarDet3DInferencer
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument('pcd', help='Point cloud file')
-    parser.add_argument('model', help='Config file')
-    parser.add_argument('weights', help='Checkpoint file')
+    # parser.add_argument('pcd', help='Point cloud file')
+    # parser.add_argument('model', help='Config file')
+    # parser.add_argument('weights', help='Checkpoint file')
+    parser.add_argument('--pcd', default="data/nuscenes-driving/samples/middle_lidar/di_day_1706_1750163719000033000.pcd.bin", help='Point cloud file')
+    parser.add_argument('--model', default="/home/dominik/Git_Repos/Public/mmdetection3d/work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d.py", help='Config file')
+    parser.add_argument('--weights', default="/home/dominik/Git_Repos/Public/mmdetection3d/work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/epoch_10.pth", help='Checkpoint file')
+    parser.add_argument(
+        '--show',
+        action='store_true',
+        default=True,
+        help='Show online visualization results')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
@@ -25,10 +33,10 @@ def parse_args():
         type=str,
         default='outputs',
         help='Output directory of prediction and visualization results.')
-    parser.add_argument(
-        '--show',
-        action='store_true',
-        help='Show online visualization results')
+    # parser.add_argument(
+    #     '--show',
+    #     action='store_true',
+    #     help='Show online visualization results')
     parser.add_argument(
         '--wait-time',
         type=float,
@@ -75,6 +83,9 @@ def parse_args():
 def main():
     # TODO: Support inference of point cloud numpy file.
     init_args, call_args = parse_args()
+
+    print(init_args)
+    print(call_args)
 
     inferencer = LidarDet3DInferencer(**init_args)
     inferencer(**call_args)

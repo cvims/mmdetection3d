@@ -45,7 +45,7 @@ train_pipeline = [
         backend_args=backend_args),
     dict(
         type='LoadPointsFromMultiSweeps',
-        sweeps_num=10,
+        sweeps_num=1,
         backend_args=backend_args),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
     dict(
@@ -71,7 +71,7 @@ test_pipeline = [
         backend_args=backend_args),
     dict(
         type='LoadPointsFromMultiSweeps',
-        sweeps_num=10,
+        sweeps_num=1,
         test_mode=True,
         backend_args=backend_args),
     dict(
@@ -102,14 +102,14 @@ eval_pipeline = [
         backend_args=backend_args),
     dict(
         type='LoadPointsFromMultiSweeps',
-        sweeps_num=10,
+        sweeps_num=1,
         test_mode=True,
         backend_args=backend_args),
     dict(type='Pack3DDetInputs', keys=['points'])
 ]
 train_dataloader = dict(
-    batch_size=8,
-    num_workers=16,
+    batch_size=4,
+    num_workers=8,
     persistent_workers=True,
     pin_memory=True,
     sampler=dict(type='DefaultSampler', shuffle=True),

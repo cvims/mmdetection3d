@@ -16,7 +16,7 @@ train_cfg = dict(val_interval=10)
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
     # logger=dict(type='LoggerHook', interval=50),
-    logger=dict(type='LoggerHook', interval=10, log_metric_by_epoch=False),
+    logger=dict(type='LoggerHook', interval=1, log_metric_by_epoch=False),
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(type='CheckpointHook', interval=1, by_epoch=True),
     sampler_seed=dict(type='DistSamplerSeedHook'),

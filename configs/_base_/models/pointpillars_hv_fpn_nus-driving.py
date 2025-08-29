@@ -23,8 +23,7 @@ model = dict(
         with_cluster_center=True,
         with_voxel_center=True,
         point_cloud_range=[-50, -50, -5, 50, 50, 3],
-        # norm_cfg=dict(type='naiveSyncBN1d', eps=1e-3, momentum=0.01)),
-        norm_cfg=dict(type='BN1d', eps=1e-3, momentum=0.01)),
+        norm_cfg=dict(type='naiveSyncBN1d', eps=1e-3, momentum=0.01)),
     pts_middle_encoder=dict(
         type='PointPillarsScatter', in_channels=64, output_shape=[400, 400]),
     pts_backbone=dict(
@@ -37,8 +36,7 @@ model = dict(
         out_channels=[64, 128, 256]),
     pts_neck=dict(
         type='mmdet.FPN',
-        # norm_cfg=dict(type='naiveSyncBN2d', eps=1e-3, momentum=0.01),
-        norm_cfg=dict(type='BN2d', eps=1e-3, momentum=0.01),
+        norm_cfg=dict(type='naiveSyncBN2d', eps=1e-3, momentum=0.01),
         act_cfg=dict(type='ReLU'),
         in_channels=[64, 128, 256],
         out_channels=256,
@@ -46,7 +44,7 @@ model = dict(
         num_outs=3),
     pts_bbox_head=dict(
         type='Anchor3DHead',
-        num_classes=10,
+        num_classes=2,
         in_channels=256,
         feat_channels=256,
         use_direction_classifier=True,
@@ -78,6 +76,10 @@ model = dict(
         loss_dir=dict(
             type='mmdet.CrossEntropyLoss', use_sigmoid=False,
             loss_weight=0.2)),
+    # init_cfg=dict(
+    #     type='Pretrained',
+    #     checkpoint='/home/dominik/Git_Repos/Public/mmdetection3d/work_dirs/pretrained/hv_pointpillars_fpn_sbn-all_4x8_2x_nus-3d_20210826_104936-fca299c1.pth'
+    # ),
     # model training and testing settings
     train_cfg=dict(
         pts=dict(

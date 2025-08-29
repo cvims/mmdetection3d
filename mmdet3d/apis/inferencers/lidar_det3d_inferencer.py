@@ -193,7 +193,7 @@ class LidarDet3DInferencer(Base3DInferencer):
                 pred,
                 show=show,
                 wait_time=wait_time,
-                draw_gt=False,
+                draw_gt=True,
                 draw_pred=draw_pred,
                 pred_score_thr=pred_score_thr,
                 o3d_save_path=o3d_save_path,
