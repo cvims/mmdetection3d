@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# NCCL debugging & safety
+export NCCL_DEBUG=INFO
+export NCCL_IB_DISABLE=1          # disable InfiniBand if not used
+export NCCL_P2P_LEVEL=SYS         # use system-level peer-to-peer
+export NCCL_P2P_DISABLE=1
+export NCCL_SOCKET_IFNAME=lo,docker0,eth0  # restrict network interfaces
+export OMP_NUM_THREADS=4          # avoid CPU oversubscription
+export MKL_NUM_THREADS=4
+
+
 CONFIG=$1
 CHECKPOINT=$2
 GPUS=$3

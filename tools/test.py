@@ -15,17 +15,17 @@ from mmdet3d.utils import replace_ceph_backend
 def parse_args():
     parser = argparse.ArgumentParser(
         description='MMDet3D test (and eval) a model')
-    # parser.add_argument('config', help='test config file path')
-    # parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument('--config',
-                        default='/home/dominik/Git_Repos/Public/mmdetection3d/work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d.py',
-                        help='test config file path')
-    parser.add_argument('--checkpoint',
-                        default='/home/dominik/Git_Repos/Public/mmdetection3d/work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/epoch_250.pth',
-                        help='checkpoint file')    
+    parser.add_argument('config', help='test config file path')
+    parser.add_argument('checkpoint', help='checkpoint file')
+    # parser.add_argument('--config',
+    #                     default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d.py',
+    #                     help='test config file path')
+    # parser.add_argument('--checkpoint',
+    #                     default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/epoch_310.pth',
+    #                     help='checkpoint file')    
     parser.add_argument(
         '--work-dir',
-        default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/20250828_174240',
+        default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/',
         help='the directory to save the file containing evaluation metrics')
     parser.add_argument(
         '--ceph', action='store_true', help='Use ceph as data storage backend')

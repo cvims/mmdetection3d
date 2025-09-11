@@ -9,7 +9,6 @@ export NCCL_SOCKET_IFNAME=lo,docker0,eth0  # restrict network interfaces
 export OMP_NUM_THREADS=4          # avoid CPU oversubscription
 export MKL_NUM_THREADS=4
 
-export WORLD_SIZE=2
 
 CONFIG=$1
 GPUS=$2
