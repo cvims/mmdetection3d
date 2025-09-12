@@ -11,7 +11,7 @@ from typing import Dict
 import numpy as np
 from tqdm import tqdm
 
-from nuscenesdriving import NuScenes
+from nuscenesdriving import NuScenesDrivIng
 from nuscenesdriving.eval.common.config import config_factory
 from nuscenesdriving.eval.detection.constants import DETECTION_NAMES
 from nuscenesdriving.eval.detection.evaluate import DetectionEval
@@ -30,7 +30,7 @@ class TestMain(unittest.TestCase):
             shutil.rmtree(self.res_eval_folder)
 
     @staticmethod
-    def _mock_submission(nusc: NuScenes, split: str) -> Dict[str, dict]:
+    def _mock_submission(nusc: NuScenesDrivIng, split: str) -> Dict[str, dict]:
         """
         Creates "reasonable" submission (results and metadata) by looping through the mini-val set, adding 1 GT
         prediction per sample. Predictions will be permuted randomly along all axes.
@@ -107,7 +107,7 @@ class TestMain(unittest.TestCase):
         np.random.seed(42)
         assert 'NUSCENES' in os.environ, 'Set NUSCENES env. variable to enable tests.'
 
-        nusc = NuScenes(version='v1.0-mini', dataroot=os.environ['NUSCENES'], verbose=False)
+        nusc = NuScenesDrivIng(version='v1.0-mini', dataroot=os.environ['NUSCENES'], verbose=False)
 
         with open(self.res_mockup, 'w') as f:
             json.dump(self._mock_submission(nusc, 'mini_val'), f, indent=2)

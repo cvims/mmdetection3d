@@ -206,18 +206,18 @@ class TestEval(unittest.TestCase):
         """Test for attr_acc()."""
 
         # Same attributes.
-        sa = DetectionBox(attribute_name='vehicle.parked')
-        sr = DetectionBox(attribute_name='vehicle.parked')
+        sa = DetectionBox(attribute_name='vehicle.regular')
+        sr = DetectionBox(attribute_name='vehicle.regular')
         self.assertAlmostEqual(attr_acc(sa, sr), 1.0)
 
         # Different attributes.
-        sa = DetectionBox(attribute_name='vehicle.parked')
-        sr = DetectionBox(attribute_name='vehicle.moving')
+        sa = DetectionBox(attribute_name='vehicle.regular')
+        sr = DetectionBox(attribute_name='vehicle.emergency')
         self.assertAlmostEqual(attr_acc(sa, sr), 0.0)
 
         # No attribute in one.
         sa = DetectionBox(attribute_name='')
-        sr = DetectionBox(attribute_name='vehicle.parked')
+        sr = DetectionBox(attribute_name='vehicle.regular')
         self.assertIs(attr_acc(sa, sr), np.nan)
 
 
