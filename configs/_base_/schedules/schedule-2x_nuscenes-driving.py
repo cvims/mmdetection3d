@@ -32,5 +32,5 @@ param_scheduler = [
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
-#   - `base_batch_size` = (2 GPUs) x (4 samples per GPU).
-auto_scale_lr = dict(enable=False, base_batch_size=8)
+#   - `base_batch_size` = (8 GPUs) x (4 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=32)
