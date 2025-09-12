@@ -15,14 +15,14 @@ from mmdet3d.utils import replace_ceph_backend
 def parse_args():
     parser = argparse.ArgumentParser(
         description='MMDet3D test (and eval) a model')
-    parser.add_argument('config', help='test config file path')
-    parser.add_argument('checkpoint', help='checkpoint file')
-    # parser.add_argument('--config',
-    #                     default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d.py',
-    #                     help='test config file path')
-    # parser.add_argument('--checkpoint',
-    #                     default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/epoch_310.pth',
-    #                     help='checkpoint file')    
+    # parser.add_argument('config', help='test config file path')
+    # parser.add_argument('checkpoint', help='checkpoint file')
+    parser.add_argument('--config',
+                        default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d.py',
+                        help='test config file path')
+    parser.add_argument('--checkpoint',
+                        default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/epoch_410.pth',
+                        help='checkpoint file')    
     parser.add_argument(
         '--work-dir',
         default='work_dirs/pointpillars_hv_fpn_sbn-all_8xb4-2x_nus-driving-3d/',

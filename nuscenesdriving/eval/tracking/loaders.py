@@ -8,10 +8,10 @@ from typing import List, Dict, DefaultDict
 import numpy as np
 from pyquaternion import Quaternion
 
-from nuscenes.eval.common.data_classes import EvalBoxes
-from nuscenes.eval.tracking.data_classes import TrackingBox
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.splits import create_splits_scenes
+from nuscenesdriving.eval.common.data_classes import EvalBoxes
+from nuscenesdriving.eval.tracking.data_classes import TrackingBox
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.splits import create_splits_scenes
 
 
 def interpolate_tracking_boxes(left_box: TrackingBox, right_box: TrackingBox, right_ratio: float) -> TrackingBox:
@@ -93,7 +93,7 @@ def interpolate_tracks(tracks_by_timestamp: DefaultDict[int, List[TrackingBox]])
     return tracks_by_timestamp
 
 
-def create_tracks(all_boxes: EvalBoxes, nusc: NuScenes, eval_split: str, gt: bool) \
+def create_tracks(all_boxes: EvalBoxes, nusc: NuScenesDrivIng, eval_split: str, gt: bool) \
         -> Dict[str, Dict[int, List[TrackingBox]]]:
     """
     Returns all tracks for all scenes. Samples within a track are sorted in chronological order.

@@ -5,8 +5,8 @@ from typing import Dict, Tuple, Any, List, Callable, Union
 import numpy as np
 from pyquaternion import Quaternion
 
-from nuscenes import NuScenes
-from nuscenes.eval.common.utils import quaternion_yaw, angle_diff
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.common.utils import quaternion_yaw, angle_diff
 
 MICROSECONDS_PER_SECOND = 1e6
 BUFFER = 0.15  # seconds
@@ -76,7 +76,7 @@ def convert_local_coords_to_global(coordinates: np.ndarray,
 class PredictHelper:
     """ Wrapper class around NuScenes to help retrieve data for the prediction task. """
 
-    def __init__(self, nusc: NuScenes):
+    def __init__(self, nusc: NuScenesDrivIng):
         """
         Inits PredictHelper
         :param nusc: Instance of NuScenes class.

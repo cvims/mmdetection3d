@@ -5,8 +5,8 @@ import json
 import os
 from typing import Union
 
-from nuscenes.eval.detection.data_classes import DetectionConfig
-from nuscenes.eval.tracking.data_classes import TrackingConfig
+from nuscenesdriving.eval.detection.data_classes import DetectionConfig
+from nuscenesdriving.eval.tracking.data_classes import TrackingConfig
 
 
 def config_factory(configuration_name: str) -> Union[DetectionConfig, TrackingConfig]:

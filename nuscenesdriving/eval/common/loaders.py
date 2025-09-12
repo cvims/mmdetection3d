@@ -8,14 +8,14 @@ import numpy as np
 import tqdm
 from pyquaternion import Quaternion
 
-from nuscenes import NuScenes
-from nuscenes.eval.common.data_classes import EvalBoxes
-from nuscenes.eval.detection.data_classes import DetectionBox
-from nuscenes.eval.detection.utils import category_to_detection_name
-from nuscenes.eval.tracking.data_classes import TrackingBox
-from nuscenes.utils.data_classes import Box
-from nuscenes.utils.geometry_utils import points_in_box
-from nuscenes.utils.splits import create_splits_scenes
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.common.data_classes import EvalBoxes
+from nuscenesdriving.eval.detection.data_classes import DetectionBox
+from nuscenesdriving.eval.detection.utils import category_to_detection_name
+from nuscenesdriving.eval.tracking.data_classes import TrackingBox
+from nuscenesdriving.utils.data_classes import Box
+from nuscenesdriving.utils.geometry_utils import points_in_box
+from nuscenesdriving.utils.splits import create_splits_scenes
 
 
 def load_prediction(result_path: str, max_boxes_per_sample: int, box_cls, verbose: bool = False) \
@@ -50,7 +50,7 @@ def load_prediction(result_path: str, max_boxes_per_sample: int, box_cls, verbos
     return all_results, meta
 
 
-def load_gt(nusc: NuScenes, eval_split: str, box_cls, verbose: bool = False) -> EvalBoxes:
+def load_gt(nusc: NuScenesDrivIng, eval_split: str, box_cls, verbose: bool = False) -> EvalBoxes:
     """
     Loads ground truth boxes from DB.
     :param nusc: A NuScenes instance.
@@ -177,7 +177,7 @@ def load_gt(nusc: NuScenes, eval_split: str, box_cls, verbose: bool = False) -> 
     return all_annotations
 
 
-def add_center_dist(nusc: NuScenes,
+def add_center_dist(nusc: NuScenesDrivIng,
                     eval_boxes: EvalBoxes):
     """
     Adds the cylindrical (xy) center distance from ego vehicle to each box.
@@ -204,7 +204,7 @@ def add_center_dist(nusc: NuScenes,
     return eval_boxes
 
 
-def filter_eval_boxes(nusc: NuScenes,
+def filter_eval_boxes(nusc: NuScenesDrivIng,
                       eval_boxes: EvalBoxes,
                       max_dist: Dict[str, float],
                       verbose: bool = False) -> EvalBoxes:

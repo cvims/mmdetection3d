@@ -9,16 +9,16 @@ from typing import Tuple, List, Dict, Any
 
 import numpy as np
 
-from nuscenes import NuScenes
-from nuscenes.eval.common.config import config_factory
-from nuscenes.eval.common.loaders import load_prediction, load_gt, add_center_dist, filter_eval_boxes
-from nuscenes.eval.tracking.algo import TrackingEvaluation
-from nuscenes.eval.tracking.constants import AVG_METRIC_MAP, MOT_METRIC_MAP, LEGACY_METRICS
-from nuscenes.eval.tracking.data_classes import TrackingMetrics, TrackingMetricDataList, TrackingConfig, TrackingBox, \
+from nuscenesdriving import NuScenes
+from nuscenesdriving.eval.common.config import config_factory
+from nuscenesdriving.eval.common.loaders import load_prediction, load_gt, add_center_dist, filter_eval_boxes
+from nuscenesdriving.eval.tracking.algo import TrackingEvaluation
+from nuscenesdriving.eval.tracking.constants import AVG_METRIC_MAP, MOT_METRIC_MAP, LEGACY_METRICS
+from nuscenesdriving.eval.tracking.data_classes import TrackingMetrics, TrackingMetricDataList, TrackingConfig, TrackingBox, \
     TrackingMetricData
-from nuscenes.eval.tracking.loaders import create_tracks
-from nuscenes.eval.tracking.render import recall_metric_curve, summary_plot
-from nuscenes.eval.tracking.utils import print_final_metrics
+from nuscenesdriving.eval.tracking.loaders import create_tracks
+from nuscenesdriving.eval.tracking.render import recall_metric_curve, summary_plot
+from nuscenesdriving.eval.tracking.utils import print_final_metrics
 
 
 class TrackingEval:

@@ -7,20 +7,20 @@ from typing import Any
 import numpy as np
 from matplotlib import pyplot as plt
 
-from nuscenes import NuScenes
-from nuscenes.eval.common.data_classes import EvalBoxes
-from nuscenes.eval.common.render import setup_axis
-from nuscenes.eval.common.utils import boxes_to_sensor
-from nuscenes.eval.detection.constants import TP_METRICS, DETECTION_NAMES, DETECTION_COLORS, TP_METRICS_UNITS, \
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.common.data_classes import EvalBoxes
+from nuscenesdriving.eval.common.render import setup_axis
+from nuscenesdriving.eval.common.utils import boxes_to_sensor
+from nuscenesdriving.eval.detection.constants import TP_METRICS, DETECTION_NAMES, DETECTION_COLORS, TP_METRICS_UNITS, \
     PRETTY_DETECTION_NAMES, PRETTY_TP_METRICS
-from nuscenes.eval.detection.data_classes import DetectionMetrics, DetectionMetricData, DetectionMetricDataList
-from nuscenes.utils.data_classes import LidarPointCloud
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving.eval.detection.data_classes import DetectionMetrics, DetectionMetricData, DetectionMetricDataList
+from nuscenesdriving.utils.data_classes import LidarPointCloud
+from nuscenesdriving.utils.geometry_utils import view_points
 
 Axis = Any
 
 
-def visualize_sample(nusc: NuScenes,
+def visualize_sample(nusc: NuScenesDrivIng,
                      sample_token: str,
                      gt_boxes: EvalBoxes,
                      pred_boxes: EvalBoxes,
