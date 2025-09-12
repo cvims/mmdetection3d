@@ -1,7 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import tempfile
+import os
 from os import path as osp
 from typing import Dict, List, Optional, Sequence, Tuple, Union
+import json
 
 import mmengine
 import numpy as np
@@ -10,15 +12,14 @@ import torch
 from mmengine import Config, load
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
-from nuscenes.eval.detection.config import config_factory
-from nuscenes.eval.detection.data_classes import DetectionConfig
-from nuscenes.utils.data_classes import Box as NuScenesBox
+from nuscenesdriving.eval.detection.config import config_factory
+from nuscenesdriving.eval.detection.data_classes import DetectionConfig
+from nuscenesdriving.utils.data_classes import Box as NuScenesBox
 
 from mmdet3d.models.layers import box3d_multiclass_nms
 from mmdet3d.registry import METRICS
 from mmdet3d.structures import (CameraInstance3DBoxes, LiDARInstance3DBoxes,
                                 bbox3d2result, xywhr2xyxyr)
-
 
 @METRICS.register_module()
 class NuScenesDrivingMetric(BaseMetric):
@@ -94,7 +95,7 @@ class NuScenesDrivingMetric(BaseMetric):
                  prefix: Optional[str] = None,
                  format_only: bool = False,
                  jsonfile_prefix: Optional[str] = None,
-                 eval_version: str = 'detection_cvpr_2019',
+                 eval_version: str = 'detection_2025',
                  collect_device: str = 'cpu',
                  backend_args: Optional[dict] = None) -> None:
         self.default_prefix = 'NuScenes metric'
@@ -121,6 +122,7 @@ class NuScenesDrivingMetric(BaseMetric):
 
         self.eval_version = eval_version
         self.eval_detection_configs = config_factory(self.eval_version)
+
 
     def process(self, data_batch: dict, data_samples: Sequence[dict]) -> None:
         """Process one batch of data samples and predictions.
@@ -226,11 +228,11 @@ class NuScenesDrivingMetric(BaseMetric):
         Returns:
             Dict[str, float]: Dictionary of evaluation details.
         """
-        from nuscenes import NuScenes
-        from nuscenes.eval.detection.evaluate import NuScenesEval
+        from nuscenesdriving import NuScenesDrivIng
+        from nuscenesdriving.eval.detection.evaluate import NuScenesEval
 
         output_dir = osp.join(*osp.split(result_path)[:-1])
-        nusc = NuScenes(
+        nusc = NuScenesDrivIng(
             version=self.version, dataroot=self.data_root, verbose=False)
         eval_set_map = {
             'v1.0-mini': 'mini_val',
@@ -248,7 +250,7 @@ class NuScenesDrivingMetric(BaseMetric):
         # record metrics
         metrics = mmengine.load(osp.join(output_dir, 'metrics_summary.json'))
         detail = dict()
-        metric_prefix = f'{result_name}_NuScenes'
+        metric_prefix = f'{result_name}_NuScenes_DrivIng'
         for name in classes:
             for k, v in metrics['label_aps'][name].items():
                 val = float(f'{v:.4f}')
@@ -675,7 +677,7 @@ def cam_nusc_box_to_global(
     attrs: np.ndarray,
     classes: List[str],
     eval_configs: DetectionConfig,
-    camera_type: str = 'CAM_FRONT',
+    camera_type: str = 'front_left_camera',
 ) -> Tuple[List[NuScenesBox], List[int]]:
     """Convert the box from camera to global coordinate.
 
@@ -686,7 +688,7 @@ def cam_nusc_box_to_global(
         attrs (np.ndarray): Predicted attributes.
         classes (List[str]): Mapped classes in the evaluation.
         eval_configs (:obj:`DetectionConfig`): Evaluation configuration object.
-        camera_type (str): Type of camera. Defaults to 'CAM_FRONT'.
+        camera_type (str): Type of camera. Defaults to 'front_left_camera'.
 
     Returns:
         Tuple[List[:obj:`NuScenesBox`], List[int]]: List of standard

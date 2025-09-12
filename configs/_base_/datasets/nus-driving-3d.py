@@ -10,7 +10,11 @@ point_cloud_range = [-50, -50, -5, 50, 50, 3]
 #     'motorcycle', 'pedestrian', 'traffic_cone', 'barrier'
 # ]
 class_names = [
-    'car', 'truck'
+    'car', 'truck', 'bus',
+    'trailer',
+    'bicycle', 'motorcycle',
+    'pedestrian',
+    'barrier'
 ]
 
 metainfo = dict(classes=class_names)
@@ -21,19 +25,6 @@ data_root = 'data/nuscenes-driving/'
 input_modality = dict(use_lidar=True, use_camera=False)
 data_prefix = dict(pts='samples/middle_lidar', img='', sweeps='sweeps/middle_lidar')
 
-# Example to use different file client
-# Method 1: simply set the data root and let the file I/O module
-# automatically infer from prefix (not support LMDB and Memcache yet)
-
-# data_root = 's3://openmmlab/datasets/detection3d/nuscenes/'
-
-# Method 2: Use backend_args, file_client_args in versions before 1.1.0
-# backend_args = dict(
-#     backend='petrel',
-#     path_mapping=dict({
-#         './data/': 's3://openmmlab/datasets/detection3d/',
-#          'data/': 's3://openmmlab/datasets/detection3d/'
-#      }))
 backend_args = None
 
 train_pipeline = [
@@ -87,10 +78,12 @@ test_pipeline = [
                 translation_std=[0, 0, 0]),
             dict(type='RandomFlip3D'),
             dict(
-                type='PointsRangeFilter', point_cloud_range=point_cloud_range)
+                type='PointsRangeFilter', point_cloud_range=point_cloud_range),
+            #dict(type='ObjectNameFilter', classes=class_names),
         ]),
     dict(type='Pack3DDetInputs', keys=['points'])
 ]
+
 # construct a pipeline for data and gt loading in show function
 # please keep its loading function consistent with test_pipeline (e.g. client)
 eval_pipeline = [
@@ -105,8 +98,10 @@ eval_pipeline = [
         sweeps_num=1,
         test_mode=True,
         backend_args=backend_args),
+    #dict(type='ObjectNameFilter', classes=class_names),
     dict(type='Pack3DDetInputs', keys=['points'])
 ]
+
 train_dataloader = dict(
     batch_size=4,
     num_workers=8,
@@ -126,6 +121,7 @@ train_dataloader = dict(
         # and box_type_3d='Depth' in sunrgbd and scannet dataset.
         box_type_3d='LiDAR',
         backend_args=backend_args))
+
 test_dataloader = dict(
     batch_size=1,
     num_workers=4,
@@ -135,7 +131,7 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='nuscenes_infos_test.pkl',
+        ann_file='nuscenes_infos_val.pkl',
         pipeline=test_pipeline,
         metainfo=metainfo,
         modality=input_modality,
@@ -143,6 +139,7 @@ test_dataloader = dict(
         test_mode=True,
         box_type_3d='LiDAR',
         backend_args=backend_args))
+
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
@@ -162,7 +159,7 @@ val_dataloader = dict(
         backend_args=backend_args))
 
 val_evaluator = dict(
-    type='NuScenesMetric',
+    type='NuScenesDrivingMetric',
     data_root=data_root,
     ann_file=data_root + 'nuscenes_infos_val.pkl',
     metric='bbox',

@@ -44,7 +44,7 @@ model = dict(
         num_outs=3),
     pts_bbox_head=dict(
         type='Anchor3DHead',
-        num_classes=2,
+        num_classes=8,
         in_channels=256,
         feat_channels=256,
         use_direction_classifier=True,
@@ -76,10 +76,10 @@ model = dict(
         loss_dir=dict(
             type='mmdet.CrossEntropyLoss', use_sigmoid=False,
             loss_weight=0.2)),
-    # init_cfg=dict(
-    #     type='Pretrained',
-    #     checkpoint='/home/dominik/Git_Repos/Public/mmdetection3d/work_dirs/pretrained/hv_pointpillars_fpn_sbn-all_4x8_2x_nus-3d_20210826_104936-fca299c1.pth'
-    # ),
+    init_cfg=dict(
+        type='Pretrained',
+        checkpoint='work_dirs/pretrained/hv_pointpillars_fpn_sbn-all_4x8_2x_nus-3d_20210826_104936-fca299c1.pth'
+    ),
     # model training and testing settings
     train_cfg=dict(
         pts=dict(

@@ -9,7 +9,7 @@ _base_ = [
 # interval to be 24. Please change the interval accordingly if you do not
 # use a default schedule.
 # Check '../_base_/schedules/schedule-2x.py' (if set in _base_ varialbe) for available parameters to change.
-train_cfg = dict(val_interval=10)
+train_cfg = dict(val_interval=250)
 
 
 # test

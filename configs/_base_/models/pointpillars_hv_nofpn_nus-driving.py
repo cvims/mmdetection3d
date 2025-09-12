@@ -49,7 +49,7 @@ model = dict(
     # -------------------------
     pts_bbox_head=dict(
         type='Anchor3DHead',
-        num_classes=2,
+        num_classes=8,
         in_channels=32,
         feat_channels=32,
         use_direction_classifier=True,
