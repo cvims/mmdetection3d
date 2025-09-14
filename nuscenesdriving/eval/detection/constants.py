@@ -24,8 +24,8 @@ DETECTION_COLORS = {'car': 'C0',
 ATTRIBUTE_NAMES = [
     'vehicle.emergency', 'vehicle.regular', 'vehicle.public_transport',
     'vehicle.car_trailer', 'vehicle.truck_trailer', 'vehicle.cyclist_trailer',
-    'pedestrian.standing', 'pedestrian.walking', 'pedestrian.sitting'
-    'cycle.with_rider', 'cycle.without_rider',
+    'pedestrian.standing', 'pedestrian.walking', 'pedestrian.sitting',
+    'cycle.with_rider', 'cycle.without_rider'
     ]
 
 PRETTY_ATTRIBUTE_NAMES = {
@@ -43,7 +43,13 @@ PRETTY_ATTRIBUTE_NAMES = {
 }
 
 
-TP_METRICS = ['trans_err', 'scale_err', 'orient_err', 'vel_err', 'attr_err']
+TP_METRICS = [
+    'trans_err',
+    'scale_err',
+    'orient_err',
+    'vel_err',
+    # 'attr_err'
+]
 
 PRETTY_TP_METRICS = {'trans_err': 'Trans.', 'scale_err': 'Scale', 'orient_err': 'Orient.', 'vel_err': 'Vel.',
                      'attr_err': 'Attr.'}
@@ -52,4 +58,5 @@ TP_METRICS_UNITS = {'trans_err': 'm',
                     'scale_err': '1-IOU',
                     'orient_err': 'rad.',
                     'vel_err': 'm/s',
-                    'attr_err': '1-acc.'}
+                    #'attr_err': '1-acc.'
+                    }

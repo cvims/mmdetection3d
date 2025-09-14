@@ -43,7 +43,7 @@ def visualize_sample(nusc: NuScenesDrivIng,
     """
     # Retrieve sensor & pose records.
     sample_rec = nusc.get('sample', sample_token)
-    sd_record = nusc.get('sample_data', sample_rec['data']['LIDAR_TOP'])
+    sd_record = nusc.get('sample_data', sample_rec['data']['middle_lidar'])
     cs_record = nusc.get('calibrated_sensor', sd_record['calibrated_sensor_token'])
     pose_record = nusc.get('ego_pose', sd_record['ego_pose_token'])
 
@@ -62,7 +62,7 @@ def visualize_sample(nusc: NuScenesDrivIng,
         box_est.score = box_est_global.detection_score
 
     # Get point cloud in lidar frame.
-    pc, _ = LidarPointCloud.from_file_multisweep(nusc, sample_rec, 'LIDAR_TOP', 'LIDAR_TOP', nsweeps=nsweeps)
+    pc, _ = LidarPointCloud.from_file_multisweep(nusc, sample_rec, 'middle_lidar', 'middle_lidar', nsweeps=nsweeps)
 
     # Init axes.
     _, ax = plt.subplots(1, 1, figsize=(9, 9))

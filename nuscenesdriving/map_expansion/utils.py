@@ -1,10 +1,10 @@
 from typing import List, Dict, Set
 
-from nuscenes.map_expansion.map_api import NuScenesMap
-from nuscenes.nuscenes import NuScenes
+from nuscenesdriving.map_expansion.map_api import NuScenesMap
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
 
 
-def get_egoposes_on_drivable_ratio(nusc: NuScenes, nusc_map: NuScenesMap, scene_token: str) -> float:
+def get_egoposes_on_drivable_ratio(nusc: NuScenesDrivIng, nusc_map: NuScenesMap, scene_token: str) -> float:
     """
     Get the ratio of ego poses on the drivable area.
     :param nusc: A NuScenes instance.

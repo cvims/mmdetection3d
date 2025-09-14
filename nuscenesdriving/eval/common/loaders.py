@@ -148,7 +148,7 @@ def load_gt(nusc: NuScenesDrivIng, eval_split: str, box_cls, verbose: bool = Fal
 
                 # Get label name in detection task and filter unused labels.
                 # Import locally to avoid errors when motmetrics package is not installed.
-                from nuscenes.eval.tracking.utils import category_to_tracking_name
+                from nuscenesdriving.eval.tracking.utils import category_to_tracking_name
                 tracking_name = category_to_tracking_name(sample_annotation['category_name'])
                 if tracking_name is None:
                     continue

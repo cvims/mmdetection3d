@@ -5,11 +5,11 @@ import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 
-from nuscenes import NuScenes
-from nuscenes.prediction import PredictHelper
-from nuscenes.prediction.input_representation.static_layers import StaticLayerRasterizer
-from nuscenes.prediction.models.backbone import ResNetBackbone
-from nuscenes.prediction.models.mtp import MTP, MTPLoss
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.prediction import PredictHelper
+from nuscenesdriving.prediction.input_representation.static_layers import StaticLayerRasterizer
+from nuscenesdriving.prediction.models.backbone import ResNetBackbone
+from nuscenesdriving.prediction.models.mtp import MTP, MTPLoss
 
 
 class TestDataset(Dataset):
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     tokens = tokens * 32
 
-    nusc = NuScenes('v1.0-trainval', dataroot=args.data_root)
+    nusc = NuScenesDrivIng('v1.0-trainval', dataroot=args.data_root)
     helper = PredictHelper(nusc)
 
     dataset = TestDataset(tokens, helper)

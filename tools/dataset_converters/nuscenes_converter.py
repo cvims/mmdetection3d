@@ -7,8 +7,8 @@ from typing import List, Tuple, Union
 import mmcv
 import mmengine
 import numpy as np
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.geometry_utils import view_points
 from pyquaternion import Quaternion
 from shapely.geometry import MultiPoint, box
 
@@ -41,9 +41,9 @@ def create_nuscenes_infos(root_path,
         max_sweeps (int, optional): Max number of sweeps.
             Default: 10.
     """
-    from nuscenes.nuscenes import NuScenes
-    nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
-    from nuscenes.utils import splits
+    from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+    nusc = NuScenesDrivIng(version=version, dataroot=root_path, verbose=True)
+    from nuscenesdriving.utils import splits
     available_vers = ['v1.0-trainval', 'v1.0-test', 'v1.0-mini']
     assert version in available_vers
     if version == 'v1.0-trainval':
@@ -361,7 +361,7 @@ def export_2d_annotation(root_path, info_path, version, mono3d=True):
         'CAM_BACK_RIGHT',
     ]
     nusc_infos = mmengine.load(info_path)['infos']
-    nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
+    nusc = NuScenesDrivIng(version=version, dataroot=root_path, verbose=True)
     # info_2d_list = []
     cat2Ids = [
         dict(id=nus_categories.index(cat_name), name=cat_name)

@@ -21,8 +21,8 @@ from pyquaternion.quaternion import Quaternion
 from shapely.geometry import MultiPoint, box
 from tqdm import tqdm
 
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.geometry_utils import view_points
 
 
 def post_process_coords(corner_coords: List,
@@ -203,5 +203,5 @@ if __name__ == '__main__':
     parser.add_argument('--image_limit', type=int, default=-1, help='Number of images to process or -1 to process all.')
     args = parser.parse_args()
 
-    nusc = NuScenes(dataroot=args.dataroot, version=args.version)
+    nusc = NuScenesDrivIng(dataroot=args.dataroot, version=args.version)
     main(args)

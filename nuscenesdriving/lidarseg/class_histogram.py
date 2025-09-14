@@ -6,10 +6,10 @@ import matplotlib.ticker as mticker
 import matplotlib.transforms as mtrans
 import numpy as np
 
-from nuscenes import NuScenes
-from nuscenes.panoptic.panoptic_utils import get_frame_panoptic_instances, get_panoptic_instances_stats
-from nuscenes.utils.color_map import get_colormap
-from nuscenes.utils.data_io import load_bin_file
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.panoptic.panoptic_utils import get_frame_panoptic_instances, get_panoptic_instances_stats
+from nuscenesdriving.utils.color_map import get_colormap
+from nuscenesdriving.utils.data_io import load_bin_file
 
 
 def truncate_class_name(class_name: str) -> str:
@@ -57,7 +57,7 @@ def truncate_class_name(class_name: str) -> str:
     return string_mapper[class_name]
 
 
-def render_histogram(nusc: NuScenes,
+def render_histogram(nusc: NuScenesDrivIng,
                      sort_by: str = 'count_desc',
                      verbose: bool = True,
                      font_size: int = 20,
@@ -159,7 +159,7 @@ def render_histogram(nusc: NuScenes,
         plt.show()
 
 
-def get_lidarseg_num_points_per_class(nusc: NuScenes, sort_by: str = 'count_desc') -> Dict[str, int]:
+def get_lidarseg_num_points_per_class(nusc: NuScenesDrivIng, sort_by: str = 'count_desc') -> Dict[str, int]:
     """
     Get the number of points belonging to each class for the given nuScenes split.
     :param nusc: A NuScenes object.
@@ -203,7 +203,7 @@ def get_lidarseg_num_points_per_class(nusc: NuScenes, sort_by: str = 'count_desc
     return num_points_per_class
 
 
-def get_panoptic_num_instances_per_class(nusc: NuScenes, sort_by: str = 'count_desc') -> Dict[str, int]:
+def get_panoptic_num_instances_per_class(nusc: NuScenesDrivIng, sort_by: str = 'count_desc') -> Dict[str, int]:
     """
     Get the number of scan-wise instances belonging to each class for the given nuScenes split.
     :param nusc: A NuScenes object.

@@ -25,12 +25,12 @@ import os
 from typing import Any, Dict
 
 import numpy as np
-from nuscenes.eval.panoptic.panoptic_seg_evaluator import PanopticEval
-from nuscenes.eval.panoptic.panoptic_track_evaluator import PanopticTrackingEval
-from nuscenes.eval.panoptic.utils import PanopticClassMapper, get_samples_in_panoptic_eval_set
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.data_io import load_bin_file
-from nuscenes.utils.splits import create_splits_scenes
+from nuscenesdriving.eval.panoptic.panoptic_seg_evaluator import PanopticEval
+from nuscenesdriving.eval.panoptic.panoptic_track_evaluator import PanopticTrackingEval
+from nuscenesdriving.eval.panoptic.utils import PanopticClassMapper, get_samples_in_panoptic_eval_set
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.data_io import load_bin_file
+from nuscenesdriving.utils.splits import create_splits_scenes
 from tqdm import tqdm
 
 
@@ -47,7 +47,7 @@ class NuScenesPanopticEval:
     """
 
     def __init__(self,
-                 nusc: NuScenes,
+                 nusc: NuScenesDrivIng,
                  results_folder: str,
                  eval_set: str,
                  task: str,
@@ -367,7 +367,7 @@ def main():
         raise ValueError(f'Supported task must be one of: {supported_tasks}, got: {task} !')
 
     print(f'Start {task} evaluation... \nArguments: {args}')
-    nusc = NuScenes(version=args.version, dataroot=args.dataroot, verbose=args.verbose)
+    nusc = NuScenesDrivIng(version=args.version, dataroot=args.dataroot, verbose=args.verbose)
 
     evaluator = NuScenesPanopticEval(nusc=nusc,
                                      results_folder=args.result_path,

@@ -304,8 +304,8 @@ def semantickitti_data_prep(info_prefix, out_dir):
 
 parser = argparse.ArgumentParser(description='Data converter arg parser')
 # parser.add_argument('dataset', metavar='nuscenes', help='name of the dataset')
-parser.add_argument('dataset', metavar='nuscenes-driving', help='name of the dataset')
-# parser.add_argument('--dataset', default='nuscenes-driving', help='name of the dataset')
+# parser.add_argument('dataset', metavar='nuscenes-driving', help='name of the dataset')
+parser.add_argument('--dataset', default='nuscenes-driving', help='name of the dataset')
 parser.add_argument(
     '--root-path',
     type=str,
@@ -335,7 +335,7 @@ parser.add_argument(
     default='./data/nuscenes-driving',
     required=False,
     help='name of info pkl')
-parser.add_argument('--extra-tag', type=str, default='nuscenes')
+parser.add_argument('--extra-tag', type=str, default='nuscenes-driving')
 parser.add_argument(
     '--workers', type=int, default=4, help='number of threads to be used')
 parser.add_argument(

@@ -23,10 +23,10 @@ from shapely import affinity
 from shapely.geometry import Polygon, MultiPolygon, LineString, Point, box
 from tqdm import tqdm
 
-from nuscenes.map_expansion.arcline_path_utils import discretize_lane, ArcLinePath
-from nuscenes.map_expansion.bitmap import BitMap
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving.map_expansion.arcline_path_utils import discretize_lane, ArcLinePath
+from nuscenesdriving.map_expansion.bitmap import BitMap
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.geometry_utils import view_points
 
 # Recommended style to use as the plots will show grids.
 plt.style.use('seaborn-whitegrid')
@@ -281,7 +281,7 @@ class NuScenesMap:
                                               render_legend=render_legend, bitmap=bitmap)
 
     def render_map_in_image(self,
-                            nusc: NuScenes,
+                            nusc: NuScenesDrivIng,
                             sample_token: str,
                             camera_channel: str = 'CAM_FRONT',
                             alpha: float = 0.3,
@@ -315,7 +315,7 @@ class NuScenesMap:
             layer_names=layer_names, verbose=verbose, out_path=out_path)
 
     def render_egoposes_on_fancy_map(self,
-                                     nusc: NuScenes,
+                                     nusc: NuScenesDrivIng,
                                      scene_tokens: List = None,
                                      verbose: bool = True,
                                      out_path: str = None,
@@ -1043,7 +1043,7 @@ class NuScenesMapExplorer:
         return fig, ax
 
     def render_map_in_image(self,
-                            nusc: NuScenes,
+                            nusc: NuScenesDrivIng,
                             sample_token: str,
                             camera_channel: str = 'CAM_FRONT',
                             alpha: float = 0.3,
@@ -1200,7 +1200,7 @@ class NuScenesMapExplorer:
         return fig, ax
 
     def render_egoposes_on_fancy_map(self,
-                                     nusc: NuScenes,
+                                     nusc: NuScenesDrivIng,
                                      scene_tokens: List = None,
                                      verbose: bool = True,
                                      out_path: str = None,

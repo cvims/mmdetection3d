@@ -10,22 +10,22 @@ from typing import List, Tuple, Union
 import numpy as np
 from tqdm import tqdm
 
-from nuscenes.eval.common.loaders import load_prediction, add_center_dist
-from nuscenes.eval.common.utils import boxes_to_sensor
-from nuscenes.eval.detection.data_classes import DetectionBox
-from nuscenes.eval.lidarseg.utils import get_samples_in_eval_set
-from nuscenes.eval.panoptic.utils import PanopticClassMapper
-from nuscenes.eval.tracking.data_classes import TrackingBox
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.data_classes import LidarSegPointCloud
-from nuscenes.utils.geometry_utils import points_in_box
+from nuscenesdriving.eval.common.loaders import load_prediction, add_center_dist
+from nuscenesdriving.eval.common.utils import boxes_to_sensor
+from nuscenesdriving.eval.detection.data_classes import DetectionBox
+from nuscenesdriving.eval.lidarseg.utils import get_samples_in_eval_set
+from nuscenesdriving.eval.panoptic.utils import PanopticClassMapper
+from nuscenesdriving.eval.tracking.data_classes import TrackingBox
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.data_classes import LidarSegPointCloud
+from nuscenesdriving.utils.geometry_utils import points_in_box
 
 
 OVERLAP_THRESHOLD = 0.5  # Amount by which an instance can overlap with other instances, before it is discarded.
 STUFF_START_COARSE_CLASS_ID = 11
 
 
-def generate_panoptic_labels(nusc: NuScenes,
+def generate_panoptic_labels(nusc: NuScenesDrivIng,
                              lidarseg_preds_folder: str,
                              preds_json: str,
                              eval_set: str,
@@ -172,7 +172,7 @@ def main():
     out_dir = args.out_dir if args.out_dir is not None else f'nuScenes-panoptictrack-merged-prediction-{args.version}'
 
     print(f'Start Generation... \nArguments: {args}')
-    nusc = NuScenes(version=args.version, dataroot=args.dataroot, verbose=args.verbose)
+    nusc = NuScenesDrivIng(version=args.version, dataroot=args.dataroot, verbose=args.verbose)
 
     generate_panoptic_labels(nusc=nusc,
                              lidarseg_preds_folder=args.seg_path,

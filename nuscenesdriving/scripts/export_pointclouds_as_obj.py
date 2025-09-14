@@ -16,12 +16,12 @@ from PIL import Image
 from pyquaternion import Quaternion
 from tqdm import tqdm
 
-from nuscenes import NuScenes
-from nuscenes.utils.data_classes import LidarPointCloud
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.data_classes import LidarPointCloud
+from nuscenesdriving.utils.geometry_utils import view_points
 
 
-def export_scene_pointcloud(nusc: NuScenes,
+def export_scene_pointcloud(nusc: NuScenesDrivIng,
                             out_path: str,
                             scene_token: str,
                             channel: str = 'LIDAR_TOP',
@@ -110,7 +110,7 @@ def export_scene_pointcloud(nusc: NuScenes,
                 sd_rec = nusc.get('sample_data', sd_rec['next'])
 
 
-def pointcloud_color_from_image(nusc: NuScenes,
+def pointcloud_color_from_image(nusc: NuScenesDrivIng,
                                 pointsensor_token: str,
                                 camera_token: str) -> Tuple[np.array, np.array]:
     """
@@ -201,7 +201,7 @@ if __name__ == '__main__':
         os.makedirs(out_dir)
 
     # Extract pointcloud for the specified scene
-    nusc = NuScenes()
+    nusc = NuScenesDrivIng()
     scene_tokens = [s['token'] for s in nusc.scene if s['name'] == scene_name]
     assert len(scene_tokens) == 1, 'Error: Invalid scene %s' % scene_name
 

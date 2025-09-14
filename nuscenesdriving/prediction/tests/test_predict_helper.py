@@ -7,11 +7,11 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
-from nuscenes.nuscenes import NuScenes
-from nuscenes.prediction import PredictHelper, convert_global_coords_to_local
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.prediction import PredictHelper, convert_global_coords_to_local
 
 
-class MockNuScenes(NuScenes):
+class MockNuScenes(NuScenesDrivIng):
 
     def __init__(self,
                  sample_annotations: List[Dict[str, Any]],

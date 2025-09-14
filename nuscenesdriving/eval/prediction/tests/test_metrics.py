@@ -4,10 +4,10 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from nuscenes import NuScenes
-from nuscenes.eval.prediction import metrics
-from nuscenes.eval.prediction.data_classes import Prediction
-from nuscenes.prediction import PredictHelper
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.prediction import metrics
+from nuscenesdriving.eval.prediction.data_classes import Prediction
+from nuscenesdriving.prediction import PredictHelper
 
 
 class TestFunctions(unittest.TestCase):
@@ -275,7 +275,7 @@ class TestOffRoadRate(unittest.TestCase):
     def _do_test(self, map_name, predictions, answer):
         with patch.object(PredictHelper, 'get_map_name_from_sample_token') as get_map_name:
             get_map_name.return_value = map_name
-            nusc = NuScenes('v1.0-mini', dataroot=os.environ['NUSCENES'], verbose=False)
+            nusc = NuScenesDrivIng('v1.0-mini', dataroot=os.environ['NUSCENES'], verbose=False)
             helper = PredictHelper(nusc)
 
             off_road_rate = metrics.OffRoadRate(helper, [metrics.RowMean()])

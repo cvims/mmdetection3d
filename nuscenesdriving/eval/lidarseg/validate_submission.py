@@ -6,12 +6,12 @@ import shutil
 import numpy as np
 from tqdm import tqdm
 
-from nuscenes import NuScenes
-from nuscenes.eval.lidarseg.utils import LidarsegClassMapper, get_samples_in_eval_set
-from nuscenes.utils.data_classes import LidarPointCloud
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.lidarseg.utils import LidarsegClassMapper, get_samples_in_eval_set
+from nuscenesdriving.utils.data_classes import LidarPointCloud
 
 
-def validate_submission(nusc: NuScenes,
+def validate_submission(nusc: NuScenesDrivIng,
                         results_folder: str,
                         eval_set: str,
                         verbose: bool = False,
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     verbose_ = args.verbose
     zip_out_ = args.zip_out
 
-    nusc_ = NuScenes(version=version_, dataroot=dataroot_, verbose=verbose_)
+    nusc_ = NuScenesDrivIng(version=version_, dataroot=dataroot_, verbose=verbose_)
     validate_submission(nusc=nusc_,
                         results_folder=result_path_,
                         eval_set=eval_set_,

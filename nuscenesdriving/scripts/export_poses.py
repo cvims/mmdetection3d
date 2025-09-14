@@ -14,7 +14,7 @@ from typing import List, Tuple, Dict
 
 from tqdm import tqdm
 
-from nuscenes.nuscenes import NuScenes
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
 
 
 EARTH_RADIUS_METERS = 6.378137e6
@@ -26,7 +26,7 @@ REFERENCE_COORDINATES = {
 }
 
 
-def get_poses(nusc: NuScenes, scene_token: str) -> List[dict]:
+def get_poses(nusc: NuScenesDrivIng, scene_token: str) -> List[dict]:
     """
     Return all ego poses for the current scene.
     :param nusc: The NuScenes instance to load the ego poses from.
@@ -159,7 +159,7 @@ def main(dataroot: str, version: str, output_prefix: str, output_format: str = '
     :param output_prefix: Where to save the output file (without the file extension).
     """
     # Init nuScenes.
-    nusc = NuScenes(dataroot=dataroot, version=version, verbose=False)
+    nusc = NuScenesDrivIng(dataroot=dataroot, version=version, verbose=False)
 
     coordinates_per_location = {}
     print(f'Extracting coordinates...')

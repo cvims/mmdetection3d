@@ -5,7 +5,7 @@ from pathlib import Path
 import mmcv
 import mmengine
 import numpy as np
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving.utils.geometry_utils import view_points
 
 from mmdet3d.structures import points_cam2img
 from mmdet3d.structures.ops import box_np_ops

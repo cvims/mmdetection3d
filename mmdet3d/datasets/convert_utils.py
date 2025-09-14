@@ -5,7 +5,9 @@ from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from nuscenes import NuScenes
+from nuscenesdriving import NuScenesDrivIng
 from nuscenes.utils.geometry_utils import view_points
+from nuscenes.utils.geometry_utils import view_points as nd_view_points
 from pyquaternion import Quaternion
 from shapely.geometry import MultiPoint, box
 from shapely.geometry.polygon import Polygon
@@ -26,6 +28,7 @@ nus_attributes = ('cycle.with_rider', 'cycle.without_rider',
                   'pedestrian.moving', 'pedestrian.standing',
                   'pedestrian.sitting_lying_down', 'vehicle.moving',
                   'vehicle.parked', 'vehicle.stopped', 'None')
+
 NuScenesNameMapping = {
     'movable_object.barrier': 'barrier',
     'vehicle.bicycle': 'bicycle',
@@ -42,6 +45,33 @@ NuScenesNameMapping = {
     'vehicle.trailer': 'trailer',
     'vehicle.truck': 'truck'
 }
+
+nusdriving_categories = (
+    'car', 'truck', 'trailer', 'bus',
+    'bicycle', 'motorcycle', 'pedestrian',
+    'barrier'
+)
+
+nusdriving_attributes = (
+    'vehicle.emergency', 'vehicle.regular', 'vehicle.public_transport',
+    'vehicle.car_trailer', 'vehicle.truck_trailer', 'vehicle.cyclist_trailer',
+    'pedestrian.standing', 'pedestrian.walking', 'pedestrian.sitting',
+    'cycle.with_rider', 'cycle.without_rider', 'None'
+)
+
+NuScenesDrivIngNameMapping = {
+    'movable_object.barrier': 'barrier',
+    'vehicle.bicycle': 'bicycle',
+    'vehicle.bus.bendy': 'bus',
+    'vehicle.bus.rigid': 'bus',
+    'vehicle.car': 'car',
+    'vehicle.motorcycle': 'motorcycle',
+    'human.pedestrian.adult': 'pedestrian',
+    'human.pedestrian.child': 'pedestrian',
+    'vehicle.trailer': 'trailer',
+    'vehicle.truck': 'truck'
+}
+
 LyftNameMapping = {
     'bicycle': 'bicycle',
     'bus': 'bus',
@@ -180,6 +210,139 @@ def get_nuscenes_2d_boxes(nusc: NuScenes, sample_data_token: str,
             else:
                 attr_name = nusc.get('attribute', ann_token[0])['name']
             attr_id = nus_attributes.index(attr_name)
+            # repro_rec['attribute_name'] = attr_name
+            repro_rec['attr_label'] = attr_id
+
+            repro_recs.append(repro_rec)
+
+    return repro_recs
+
+
+def get_nuscenesdriving_2d_boxes(nusc: NuScenesDrivIng, sample_data_token: str,
+                          visibilities: List[str]) -> List[dict]:
+    """Get the 2d / mono3d annotation records for a given `sample_data_token`
+    of nuscenes dataset.
+
+    Args:
+        nusc (:obj:`NuScenes`): NuScenes class.
+        sample_data_token (str): Sample data token belonging to a camera
+            keyframe.
+        visibilities (List[str]): Visibility filter.
+
+    Return:
+        List[dict]: List of 2d annotation record that belongs to the input
+        `sample_data_token`.
+    """
+
+    # Get the sample data and the sample corresponding to that sample data.
+    sd_rec = nusc.get('sample_data', sample_data_token)
+
+    assert sd_rec[
+        'sensor_modality'] == 'camera', 'Error: get_2d_boxes only works' \
+        ' for camera sample_data!'
+    if not sd_rec['is_key_frame']:
+        raise ValueError(
+            'The 2D re-projections are available only for keyframes.')
+
+    s_rec = nusc.get('sample', sd_rec['sample_token'])
+
+    # Get the calibrated sensor and ego pose
+    # record to get the transformation matrices.
+    cs_rec = nusc.get('calibrated_sensor', sd_rec['calibrated_sensor_token'])
+    pose_rec = nusc.get('ego_pose', sd_rec['ego_pose_token'])
+    camera_intrinsic = np.array(cs_rec['camera_intrinsic'])
+
+    # Get all the annotation with the specified visibilties.
+    ann_recs = [
+        nusc.get('sample_annotation', token) for token in s_rec['anns']
+    ]
+    ann_recs = [
+        ann_rec for ann_rec in ann_recs
+        if (ann_rec['visibility_token'] in visibilities)
+    ]
+
+    repro_recs = []
+
+    for ann_rec in ann_recs:
+        # Augment sample_annotation with token information.
+        ann_rec['sample_annotation_token'] = ann_rec['token']
+        ann_rec['sample_data_token'] = sample_data_token
+
+        # Get the box in global coordinates.
+        box = nusc.get_box(ann_rec['token'])
+
+        # Move them to the ego-pose frame.
+        box.translate(-np.array(pose_rec['translation']))
+        box.rotate(Quaternion(pose_rec['rotation']).inverse)
+
+        # Move them to the calibrated sensor frame.
+        box.translate(-np.array(cs_rec['translation']))
+        box.rotate(Quaternion(cs_rec['rotation']).inverse)
+
+        # Filter out the corners that are not in front of the calibrated
+        # sensor.
+        corners_3d = box.corners()
+        in_front = np.argwhere(corners_3d[2, :] > 0).flatten()
+        corners_3d = corners_3d[:, in_front]
+
+        # Project 3d box to 2d.
+        corner_coords = nd_view_points(corners_3d, camera_intrinsic,
+                                    True).T[:, :2].tolist()
+
+        # Keep only corners that fall within the image.
+        final_coords = post_process_coords(corner_coords)
+
+        # Skip if the convex hull of the re-projected corners
+        # does not intersect the image canvas.
+        if final_coords is None:
+            continue
+        else:
+            min_x, min_y, max_x, max_y = final_coords
+
+        # Generate dictionary record to be included in the .json file.
+        repro_rec = generate_record(ann_rec, min_x, min_y, max_x, max_y,
+                                    'nuscenes-driving')
+
+        # if repro_rec is None, we do not append it into repre_recs
+        if repro_rec is not None:
+            loc = box.center.tolist()
+
+            dim = box.wlh
+            dim[[0, 1, 2]] = dim[[1, 2, 0]]  # convert wlh to our lhw
+            dim = dim.tolist()
+
+            rot = box.orientation.yaw_pitch_roll[0]
+            rot = [-rot]  # convert the rot to our cam coordinate
+
+            global_velo2d = nusc.box_velocity(box.token)[:2]
+            global_velo3d = np.array([*global_velo2d, 0.0])
+            e2g_r_mat = Quaternion(pose_rec['rotation']).rotation_matrix
+            c2e_r_mat = Quaternion(cs_rec['rotation']).rotation_matrix
+            cam_velo3d = global_velo3d @ np.linalg.inv(
+                e2g_r_mat).T @ np.linalg.inv(c2e_r_mat).T
+            velo = cam_velo3d[0::2].tolist()
+
+            repro_rec['bbox_3d'] = loc + dim + rot
+            repro_rec['velocity'] = velo
+
+            center_3d = np.array(loc).reshape([1, 3])
+            center_2d_with_depth = points_cam2img(
+                center_3d, camera_intrinsic, with_depth=True)
+            center_2d_with_depth = center_2d_with_depth.squeeze().tolist()
+            repro_rec['center_2d'] = center_2d_with_depth[:2]
+            repro_rec['depth'] = center_2d_with_depth[2]
+            # normalized center2D + depth
+            # if samples with depth < 0 will be removed
+            if repro_rec['depth'] <= 0:
+                continue
+
+            ann_token = nusc.get('sample_annotation',
+                                 box.token)['attribute_tokens']
+            if len(ann_token) == 0:
+                attr_name = 'None'
+            else:
+                attr_name = nusc.get('attribute', ann_token[0])['name']
+            attr_id = nusdriving_attributes.index(attr_name)
             # repro_rec['attribute_name'] = attr_name
             repro_rec['attr_label'] = attr_id
 
@@ -404,6 +567,13 @@ def generate_record(ann_rec: dict, x1: float, y1: float, x2: float, y2: float,
         else:
             cat_name = NuScenesNameMapping[cat_name]
             categories = nus_categories
+    elif dataset == 'nuscenes-driving':
+        cat_name = ann_rec['category_name']
+        if cat_name not in NuScenesDrivIngNameMapping:
+            return None
+        else:
+            cat_name = NuScenesDrivIngNameMapping[cat_name]
+            categories = nusdriving_categories
     else:
         if dataset == 'kitti':
             categories = kitti_categories

@@ -1,8 +1,8 @@
 from typing import Dict, List, Tuple
 
 import numpy as np
-from nuscenes import NuScenes
-from nuscenes.utils.splits import create_splits_scenes
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.splits import create_splits_scenes
 
 
 class ConfusionMatrix:
@@ -122,7 +122,7 @@ class LidarsegClassMapper:
         nusc_ = NuScenes(version='v1.0-mini', dataroot='/data/sets/nuscenes', verbose=True)
         mapper_ = LidarsegClassMapper(nusc_)
     """
-    def __init__(self, nusc: NuScenes):
+    def __init__(self, nusc: NuScenesDrivIng):
         """
         Initialize a LidarsegClassMapper object.
         :param nusc: A NuScenes object.
@@ -313,7 +313,7 @@ class LidarsegClassMapper:
         return lidarseg_counts
 
 
-def get_samples_in_eval_set(nusc: NuScenes, eval_set: str) -> List[str]:
+def get_samples_in_eval_set(nusc: NuScenesDrivIng, eval_set: str) -> List[str]:
     """
     Gets all the sample tokens from the split that are relevant to the eval set.
     :param nusc: A NuScenes object.

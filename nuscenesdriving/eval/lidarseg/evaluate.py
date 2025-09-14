@@ -5,9 +5,9 @@ from typing import Dict
 
 from tqdm import tqdm
 
-from nuscenes import NuScenes
-from nuscenes.eval.lidarseg.utils import ConfusionMatrix, LidarsegClassMapper, get_samples_in_eval_set
-from nuscenes.utils.data_io import load_bin_file
+from nuscenesdriving import NuScenesDriving
+from nuscenesdriving.eval.lidarseg.utils import ConfusionMatrix, LidarsegClassMapper, get_samples_in_eval_set
+from nuscenesdriving.utils.data_io import load_bin_file
 
 
 class LidarSegEval:
@@ -34,7 +34,7 @@ class LidarSegEval:
     Please see https://www.nuscenes.org/lidar-segmentation for more details.
     """
     def __init__(self,
-                 nusc: NuScenes,
+                 nusc: NuScenesDriving,
                  results_folder: str,
                  eval_set: str,
                  verbose: bool = False):
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     version_ = args.version
     verbose_ = args.verbose
 
-    nusc_ = NuScenes(version=version_, dataroot=dataroot_, verbose=verbose_)
+    nusc_ = NuScenesDriving(version=version_, dataroot=dataroot_, verbose=verbose_)
 
     evaluator = LidarSegEval(nusc_, result_path_, eval_set=eval_set_, verbose=verbose_)
     evaluator.evaluate()

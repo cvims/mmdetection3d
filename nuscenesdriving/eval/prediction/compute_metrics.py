@@ -8,10 +8,10 @@ from typing import List, Dict, Any
 
 import numpy as np
 
-from nuscenes import NuScenes
-from nuscenes.eval.prediction.config import PredictionConfig, load_prediction_config
-from nuscenes.eval.prediction.data_classes import Prediction
-from nuscenes.prediction import PredictHelper
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.prediction.config import PredictionConfig, load_prediction_config
+from nuscenesdriving.eval.prediction.data_classes import Prediction
+from nuscenesdriving.prediction import PredictHelper
 
 
 def compute_metrics(predictions: List[Dict[str, Any]],
@@ -50,7 +50,7 @@ def main(version: str, data_root: str, submission_path: str,
     :param config_name: Name of config file.
     """
     predictions = json.load(open(submission_path, "r"))
-    nusc = NuScenes(version=version, dataroot=data_root)
+    nusc = NuScenesDrivIng(version=version, dataroot=data_root)
     helper = PredictHelper(nusc)
     config = load_prediction_config(helper, config_name)
     results = compute_metrics(predictions, helper, config)

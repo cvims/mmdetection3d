@@ -6,13 +6,13 @@ import json
 import os
 from typing import List, Any
 
-from nuscenes import NuScenes
-from nuscenes.eval.prediction.config import PredictionConfig
-from nuscenes.eval.prediction.config import load_prediction_config
-from nuscenes.eval.prediction.data_classes import Prediction
-from nuscenes.eval.prediction.splits import get_prediction_challenge_split
-from nuscenes.prediction import PredictHelper
-from nuscenes.prediction.models.physics import ConstantVelocityHeading
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.prediction.config import PredictionConfig
+from nuscenesdriving.eval.prediction.config import load_prediction_config
+from nuscenesdriving.eval.prediction.data_classes import Prediction
+from nuscenesdriving.eval.prediction.splits import get_prediction_challenge_split
+from nuscenesdriving.prediction import PredictHelper
+from nuscenesdriving.prediction.models.physics import ConstantVelocityHeading
 
 
 def load_model(helper: PredictHelper, config: PredictionConfig, path_to_model_weights: str) -> Any:
@@ -57,7 +57,7 @@ def main(version: str, data_root: str, split_name: str, output_dir: str, submiss
     :param submission_name: Name of the submission to use for the results file.
     :param config_name: Name of config file to use.
     """
-    nusc = NuScenes(version=version, dataroot=data_root)
+    nusc = NuScenesDrivIng(version=version, dataroot=data_root)
     helper = PredictHelper(nusc)
     dataset = get_prediction_challenge_split(split_name)
     config = load_prediction_config(helper, config_name)

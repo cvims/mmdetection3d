@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from nuscenes.prediction import PredictHelper
-from nuscenes.prediction.models.physics import ConstantVelocityHeading, PhysicsOracle
+from nuscenesdriving.prediction import PredictHelper
+from nuscenesdriving.prediction.models.physics import ConstantVelocityHeading, PhysicsOracle
 
 
 class TestPhysicsBaselines(unittest.TestCase):

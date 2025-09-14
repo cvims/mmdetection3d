@@ -4,8 +4,8 @@
 import os
 import unittest
 
-from nuscenes import NuScenes
-from nuscenes.utils.data_classes import LidarPointCloud, RadarPointCloud
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.data_classes import LidarPointCloud, RadarPointCloud
 
 
 class TestDataClasses(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestDataClasses(unittest.TestCase):
         """
         assert 'NUSCENES' in os.environ, 'Set NUSCENES env. variable to enable tests.'
         dataroot = os.environ['NUSCENES']
-        nusc = NuScenes(version='v1.0-mini', dataroot=dataroot, verbose=False)
+        nusc = NuScenesDrivIng(version='v1.0-mini', dataroot=dataroot, verbose=False)
         sample_rec = nusc.sample[0]
         lidar_name = nusc.get('sample_data', sample_rec['data']['LIDAR_TOP'])['filename']
         radar_name = nusc.get('sample_data', sample_rec['data']['RADAR_FRONT'])['filename']

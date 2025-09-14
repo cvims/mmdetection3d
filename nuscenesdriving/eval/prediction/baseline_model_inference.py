@@ -7,11 +7,11 @@ import argparse
 import json
 import os
 
-from nuscenes import NuScenes
-from nuscenes.eval.prediction.config import load_prediction_config
-from nuscenes.eval.prediction.splits import get_prediction_challenge_split
-from nuscenes.prediction import PredictHelper
-from nuscenes.prediction.models.physics import ConstantVelocityHeading, PhysicsOracle
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.prediction.config import load_prediction_config
+from nuscenesdriving.eval.prediction.splits import get_prediction_challenge_split
+from nuscenesdriving.prediction import PredictHelper
+from nuscenesdriving.prediction.models.physics import ConstantVelocityHeading, PhysicsOracle
 
 
 def main(version: str, data_root: str,
@@ -25,7 +25,7 @@ def main(version: str, data_root: str,
     :param config_name: Name of config file.
     """
 
-    nusc = NuScenes(version=version, dataroot=data_root)
+    nusc = NuScenesDrivIng(version=version, dataroot=data_root)
     helper = PredictHelper(nusc)
     dataset = get_prediction_challenge_split(split_name, dataroot=data_root)
     config = load_prediction_config(helper, config_name)

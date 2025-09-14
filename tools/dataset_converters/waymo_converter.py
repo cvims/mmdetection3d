@@ -20,7 +20,7 @@ import mmengine
 import numpy as np
 import tensorflow as tf
 from mmengine import print_log
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving.utils.geometry_utils import view_points
 from PIL import Image
 from waymo_open_dataset.utils import range_image_utils, transform_utils
 from waymo_open_dataset.utils.frame_utils import \

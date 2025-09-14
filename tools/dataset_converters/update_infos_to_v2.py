@@ -17,10 +17,12 @@ from pathlib import Path
 import mmengine
 import numpy as np
 from nuscenes.nuscenes import NuScenes
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
 
 from mmdet3d.datasets.convert_utils import (convert_annos,
                                             get_kitti_style_2d_boxes,
-                                            get_nuscenes_2d_boxes)
+                                            get_nuscenes_2d_boxes,
+                                            get_nuscenesdriving_2d_boxes)
 from mmdet3d.datasets.utils import convert_quaternion_to_matrix
 from mmdet3d.structures import points_cam2img
 
@@ -263,7 +265,7 @@ def generate_nuscenes_driving_camera_instances(info, nusc):
     for cam in camera_types:
         cam_info = info['cams'][cam]
         # list[dict]
-        ann_infos = get_nuscenes_2d_boxes(
+        ann_infos = get_nuscenesdriving_2d_boxes(
             nusc,
             cam_info['sample_data_token'],
             visibilities=['', '1', '2', '3', '4'])
@@ -431,10 +433,10 @@ def update_nuscenes_driving_infos(pkl_path, out_dir):
     data_list = mmengine.load(pkl_path)
     METAINFO = {
         'classes':
-        ('car', 'truck', 'trailer', 'bus', 'construction_vehicle', 'bicycle',
-         'motorcycle', 'pedestrian', 'traffic_cone', 'barrier'),
+        ('car', 'truck', 'trailer', 'bus', 'bicycle',
+         'motorcycle', 'pedestrian', 'barrier'),
     }
-    nusc = NuScenes(
+    nusc = NuScenesDrivIng(
         version=data_list['metadata']['version'],
         dataroot='./data/nuscenes-driving',
         verbose=True)
@@ -549,7 +551,7 @@ def update_nuscenes_driving_infos(pkl_path, out_dir):
     if ignore_class_name:
         for ignore_class in ignore_class_name:
             metainfo['categories'][ignore_class] = -1
-    metainfo['dataset'] = 'nuscenes'
+    metainfo['dataset'] = 'nuscenes-driving'
     metainfo['version'] = data_list['metadata']['version']
     metainfo['info_version'] = '1.1'
     converted_data_info = dict(metainfo=metainfo, data_list=converted_list)

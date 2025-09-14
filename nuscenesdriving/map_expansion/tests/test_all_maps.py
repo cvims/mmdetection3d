@@ -5,9 +5,9 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 import tqdm
 
-from nuscenes.map_expansion.map_api import NuScenesMap, locations
-from nuscenes.map_expansion.utils import get_egoposes_on_drivable_ratio, get_disconnected_lanes
-from nuscenes.nuscenes import NuScenes
+from nuscenesdriving.map_expansion.map_api import NuScenesMap, locations
+from nuscenesdriving.map_expansion.utils import get_egoposes_on_drivable_ratio, get_disconnected_lanes
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
 
 
 class TestAllMaps(unittest.TestCase):
@@ -64,7 +64,7 @@ class TestAllMaps(unittest.TestCase):
 
     def test_egoposes_on_map(self):
         """ Test that all ego poses land on """
-        nusc = NuScenes(version=self.version, dataroot=os.environ['NUSCENES'], verbose=False)
+        nusc = NuScenesDrivIng(version=self.version, dataroot=os.environ['NUSCENES'], verbose=False)
         whitelist = ['scene-0499', 'scene-0501', 'scene-0502', 'scene-0515', 'scene-0517']
 
         invalid_scenes = []

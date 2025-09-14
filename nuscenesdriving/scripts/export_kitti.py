@@ -45,12 +45,12 @@ import numpy as np
 from PIL import Image
 from pyquaternion import Quaternion
 
-from nuscenes.eval.detection.utils import category_to_detection_name
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.data_classes import LidarPointCloud, Box
-from nuscenes.utils.geometry_utils import BoxVisibility, transform_matrix
-from nuscenes.utils.kitti import KittiDB
-from nuscenes.utils.splits import create_splits_logs
+from nuscenesdriving.eval.detection.utils import category_to_detection_name
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.data_classes import LidarPointCloud, Box
+from nuscenesdriving.utils.geometry_utils import BoxVisibility, transform_matrix
+from nuscenesdriving.utils.kitti import KittiDB
+from nuscenesdriving.utils.splits import create_splits_logs
 
 
 class KittiConverter:
@@ -81,7 +81,7 @@ class KittiConverter:
             os.makedirs(self.nusc_kitti_dir)
 
         # Select subset of the data to look at.
-        self.nusc = NuScenes(version=nusc_version)
+        self.nusc = NuScenesDrivIng(version=nusc_version)
 
     def nuscenes_gt_to_kitti(self) -> None:
         """

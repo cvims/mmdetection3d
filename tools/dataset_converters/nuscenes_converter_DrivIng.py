@@ -7,22 +7,26 @@ from typing import List, Tuple, Union
 import mmcv
 import mmengine
 import numpy as np
-from nuscenes.nuscenes import NuScenes
-from nuscenes.utils.geometry_utils import view_points
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.utils.geometry_utils import view_points
 from pyquaternion import Quaternion
 from shapely.geometry import MultiPoint, box
 
-from mmdet3d.datasets.convert_utils import NuScenesNameMapping
+from mmdet3d.datasets.convert_utils import NuScenesDrivIngNameMapping
 from mmdet3d.structures import points_cam2img
 
-nus_categories = ('car', 'truck', 'trailer', 'bus', 'construction_vehicle',
-                  'bicycle', 'motorcycle', 'pedestrian', 'traffic_cone',
-                  'barrier')
+nus_categories = (
+    'car', 'truck', 'trailer', 'bus',
+    'bicycle', 'motorcycle', 'pedestrian',
+    'barrier'
+)
 
-nus_attributes = ('cycle.with_rider', 'cycle.without_rider',
-                  'pedestrian.moving', 'pedestrian.standing',
-                  'pedestrian.sitting_lying_down', 'vehicle.moving',
-                  'vehicle.parked', 'vehicle.stopped', 'None')
+nus_attributes = (
+    'vehicle.emergency', 'vehicle.regular', 'vehicle.public_transport',
+    'vehicle.car_trailer', 'vehicle.truck_trailer', 'vehicle.cyclist_trailer',
+    'pedestrian.standing', 'pedestrian.walking', 'pedestrian.sitting',
+    'cycle.with_rider', 'cycle.without_rider', 'None'
+)
 
 
 def create_nuscenes_driving_infos(root_path,
@@ -41,21 +45,17 @@ def create_nuscenes_driving_infos(root_path,
         max_sweeps (int, optional): Max number of sweeps.
             Default: 10.
     """
-    from nuscenes.nuscenes import NuScenes
-    nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
-    # from nuscenes.utils import splits
-    splits = {
-        'train': ['di_day_1706'],
-        'val': ['di_day_1706'],
-        'test': ['di_day_1706']
-    }
+    from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+    nusc = NuScenesDrivIng(version=version, dataroot=root_path, verbose=True)
+    from nuscenesdriving.utils import splits
+
     available_vers = ['v1.0-trainval', 'v1.0-test', 'v1.0-mini']
     assert version in available_vers
     if version == 'v1.0-trainval':
-        train_scenes = splits['train']
-        val_scenes = splits['val']
+        train_scenes = splits.train
+        val_scenes = splits.val
     elif version == 'v1.0-test':
-        train_scenes = splits['test']
+        train_scenes = splits.test
         val_scenes = []
     else:
         raise ValueError('unknown')
@@ -253,8 +253,8 @@ def _fill_trainval_infos(nusc,
 
             names = [b.name for b in boxes]
             for i in range(len(names)):
-                if names[i] in NuScenesNameMapping:
-                    names[i] = NuScenesNameMapping[names[i]]
+                if names[i] in NuScenesDrivIngNameMapping:
+                    names[i] = NuScenesDrivIngNameMapping[names[i]]
             names = np.array(names)
             # we need to convert box size to
             # the format of our lidar coordinate system
@@ -365,7 +365,7 @@ def export_2d_annotation(root_path, info_path, version, mono3d=True):
         'back_right_camera',
     ]
     nusc_infos = mmengine.load(info_path)['infos']
-    nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
+    nusc = NuScenesDrivIng(version=version, dataroot=root_path, verbose=True)
     # info_2d_list = []
     cat2Ids = [
         dict(id=nus_categories.index(cat_name), name=cat_name)
@@ -628,9 +628,9 @@ def generate_record(ann_rec: dict, x1: float, y1: float, x2: float, y2: float,
     coco_rec['image_id'] = sample_data_token
     coco_rec['area'] = (y2 - y1) * (x2 - x1)
 
-    if repro_rec['category_name'] not in NuScenesNameMapping:
+    if repro_rec['category_name'] not in NuScenesDrivIngNameMapping:
         return None
-    cat_name = NuScenesNameMapping[repro_rec['category_name']]
+    cat_name = NuScenesDrivIngNameMapping[repro_rec['category_name']]
     coco_rec['category_name'] = cat_name
     coco_rec['category_id'] = nus_categories.index(cat_name)
     coco_rec['bbox'] = [x1, y1, x2 - x1, y2 - y1]

@@ -4,8 +4,8 @@ Code written by Motional and the Robot Learning Lab, University of Freiburg.
 """
 from typing import Dict
 
-from nuscenes.eval.lidarseg.utils import LidarsegClassMapper, get_samples_in_eval_set
-from nuscenes.nuscenes import NuScenes
+from nuscenesdriving.eval.lidarseg.utils import LidarsegClassMapper, get_samples_in_eval_set
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
 
 get_samples_in_panoptic_eval_set = get_samples_in_eval_set
 
@@ -19,7 +19,7 @@ class PanopticClassMapper(LidarsegClassMapper):
         mapper_ = PanopticClassMapper(nusc_)
     """
 
-    def __init__(self, nusc: NuScenes):
+    def __init__(self, nusc: NuScenesDrivIng):
         """
         Initialize a PanopticClassMapper object.
         :param nusc: A NuScenes object.

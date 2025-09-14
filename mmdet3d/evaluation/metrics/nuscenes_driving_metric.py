@@ -56,28 +56,24 @@ class NuScenesDrivingMetric(BaseMetric):
         'vehicle.bus.bendy': 'bus',
         'vehicle.bus.rigid': 'bus',
         'vehicle.car': 'car',
-        'vehicle.construction': 'construction_vehicle',
         'vehicle.motorcycle': 'motorcycle',
         'human.pedestrian.adult': 'pedestrian',
         'human.pedestrian.child': 'pedestrian',
-        'human.pedestrian.construction_worker': 'pedestrian',
-        'human.pedestrian.police_officer': 'pedestrian',
-        'movable_object.trafficcone': 'traffic_cone',
         'vehicle.trailer': 'trailer',
         'vehicle.truck': 'truck'
     }
+
     DefaultAttribute = {
-        'car': 'vehicle.parked',
-        'pedestrian': 'pedestrian.moving',
-        'trailer': 'vehicle.parked',
-        'truck': 'vehicle.parked',
-        'bus': 'vehicle.moving',
-        'motorcycle': 'cycle.without_rider',
-        'construction_vehicle': 'vehicle.parked',
-        'bicycle': 'cycle.without_rider',
+        'car': 'vehicle.regular',
+        'pedestrian': 'pedestrian.walking',
+        'trailer': 'vehicle.truck_trailer',
+        'truck': 'vehicle.regular',
+        'bus': 'vehicle.regular',
+        'motorcycle': 'cycle.with_rider',
+        'bicycle': 'cycle.with_rider',
         'barrier': '',
-        'traffic_cone': '',
     }
+
     # https://github.com/nutonomy/nuscenes-devkit/blob/57889ff20678577025326cfc24e57424a829be0a/python-sdk/nuscenes/eval/detection/evaluate.py#L222 # noqa
     ErrNameMapping = {
         'trans_err': 'mATE',
@@ -98,7 +94,7 @@ class NuScenesDrivingMetric(BaseMetric):
                  eval_version: str = 'detection_2025',
                  collect_device: str = 'cpu',
                  backend_args: Optional[dict] = None) -> None:
-        self.default_prefix = 'NuScenes metric'
+        self.default_prefix = 'NuScenesDrivIng metric'
         super(NuScenesDrivingMetric, self).__init__(
             collect_device=collect_device, prefix=prefix)
         if modality is None:
@@ -331,24 +327,32 @@ class NuScenesDrivingMetric(BaseMetric):
         """
         # TODO: Simplify the variable name
         AttrMapping_rev2 = [
-            'cycle.with_rider', 'cycle.without_rider', 'pedestrian.moving',
-            'pedestrian.standing', 'pedestrian.sitting_lying_down',
-            'vehicle.moving', 'vehicle.parked', 'vehicle.stopped', 'None'
+            'vehicle.emergency', 'vehicle.regular', 'vehicle.public_transport',
+            'vehicle.car_trailer', 'vehicle.truck_trailer', 'vehicle.cyclist_trailer',
+            'pedestrian.standing', 'pedestrian.walking', 'pedestrian.sitting',
+            'cycle.with_rider', 'cycle.without_rider', 'None'
+
         ]
         if label_name == 'car' or label_name == 'bus' \
-            or label_name == 'truck' or label_name == 'trailer' \
-                or label_name == 'construction_vehicle':
-            if AttrMapping_rev2[attr_idx] == 'vehicle.moving' or \
-                AttrMapping_rev2[attr_idx] == 'vehicle.parked' or \
-                    AttrMapping_rev2[attr_idx] == 'vehicle.stopped':
+            or label_name == 'truck':
+            if AttrMapping_rev2[attr_idx] == 'vehicle.emergency' or \
+                AttrMapping_rev2[attr_idx] == 'vehicle.regular' or \
+                    AttrMapping_rev2[attr_idx] == 'vehicle.public_transport':
+                return AttrMapping_rev2[attr_idx]
+            else:
+                return self.DefaultAttribute[label_name]
+        elif label_name == 'trailer':
+            if AttrMapping_rev2[attr_idx] == 'vehicle.car_trailer' or \
+                AttrMapping_rev2[attr_idx] == 'vehicle.truck_trailer' or \
+                    AttrMapping_rev2[attr_idx] == 'vehicle.cyclist_trailer':
                 return AttrMapping_rev2[attr_idx]
             else:
                 return self.DefaultAttribute[label_name]
         elif label_name == 'pedestrian':
-            if AttrMapping_rev2[attr_idx] == 'pedestrian.moving' or \
+            if AttrMapping_rev2[attr_idx] == 'pedestrian.walking' or \
                 AttrMapping_rev2[attr_idx] == 'pedestrian.standing' or \
                     AttrMapping_rev2[attr_idx] == \
-                    'pedestrian.sitting_lying_down':
+                    'pedestrian.sitting':
                 return AttrMapping_rev2[attr_idx]
             else:
                 return self.DefaultAttribute[label_name]
@@ -517,26 +521,27 @@ class NuScenesDrivingMetric(BaseMetric):
                                              self.eval_detection_configs)
             for i, box in enumerate(boxes):
                 name = classes[box.label]
-                if np.sqrt(box.velocity[0]**2 + box.velocity[1]**2) > 0.2:
-                    if name in [
-                            'car',
-                            'construction_vehicle',
-                            'bus',
-                            'truck',
-                            'trailer',
-                    ]:
-                        attr = 'vehicle.moving'
-                    elif name in ['bicycle', 'motorcycle']:
-                        attr = 'cycle.with_rider'
-                    else:
-                        attr = self.DefaultAttribute[name]
-                else:
-                    if name in ['pedestrian']:
-                        attr = 'pedestrian.standing'
-                    elif name in ['bus']:
-                        attr = 'vehicle.stopped'
-                    else:
-                        attr = self.DefaultAttribute[name]
+                # if np.sqrt(box.velocity[0]**2 + box.velocity[1]**2) > 0.2:
+                #     if name in [
+                #             'car',
+                #             'bus',
+                #             'truck',
+                #             'trailer',
+                #     ]:
+                #         attr = 'vehicle.moving'
+                #     elif name in ['bicycle', 'motorcycle']:
+                #         attr = 'cycle.with_rider'
+                #     else:
+                #         attr = self.DefaultAttribute[name]
+                # else:
+                #     if name in ['pedestrian']:
+                #         attr = 'pedestrian.standing'
+                #     elif name in ['bus']:
+                #         attr = 'vehicle.stopped'
+                #     else:
+                #         attr = self.DefaultAttribute[name]
+                
+                attr = self.DefaultAttribute[name]
 
                 nusc_anno = dict(
                     sample_token=sample_token,

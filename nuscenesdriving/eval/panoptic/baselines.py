@@ -10,9 +10,9 @@ import time
 from typing import List
 import zipfile
 
-from nuscenes.nuscenes import NuScenes
-from nuscenes.eval.panoptic.evaluate import NuScenesPanopticEval
-from nuscenes.eval.panoptic.get_panoptic_from_seg_det_or_track import generate_panoptic_labels
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.panoptic.evaluate import NuScenesPanopticEval
+from nuscenesdriving.eval.panoptic.get_panoptic_from_seg_det_or_track import generate_panoptic_labels
 
 
 def prepare_files(method_names: List[str], root_dir: str) -> None:
@@ -56,7 +56,7 @@ def panop_baselines_from_lidarseg_detect_track(out_dir: str,
                                                det_or_track_method_names: List[str],
                                                task: str = 'tracking',
                                                version: str = 'v1.0-test',
-                                               dataroot: str = '/data/sets/nuscenes',
+                                               dataroot: str = '/data/sets/nuscenes-driving',
                                                n_jobs: int = -1,
                                                verbose: bool = False) -> None:
     """
@@ -129,7 +129,7 @@ def generate_and_evaluate_baseline(out_dir: str,
     :param dataroot: Path to the tables and data for the specified version of nuScenes.
     :param verbose: Whether to print messages to stdout.
     """
-    nusc = NuScenes(version=version, dataroot=dataroot, verbose=verbose)
+    nusc = NuScenesDrivIng(version=version, dataroot=dataroot, verbose=verbose)
     eval_set = nusc.version.split('-')[-1]
 
     dir_to_save_panoptic_preds_to = os.path.join(out_dir, task, 'panoptic_predictions',

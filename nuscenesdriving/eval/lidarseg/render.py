@@ -8,18 +8,18 @@ from matplotlib import gridspec
 import numpy as np
 from tqdm import tqdm
 
-from nuscenes import NuScenes
-from nuscenes.eval.lidarseg.evaluate import LidarSegEval
-from nuscenes.eval.lidarseg.utils import ConfusionMatrix, LidarsegClassMapper
-from nuscenes.lidarseg.lidarseg_utils import colormap_to_colors
-from nuscenes.utils.data_classes import LidarSegPointCloud
+from nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.eval.lidarseg.evaluate import LidarSegEval
+from nuscenesdriving.eval.lidarseg.utils import ConfusionMatrix, LidarsegClassMapper
+from nuscenesdriving.lidarseg.lidarseg_utils import colormap_to_colors
+from nuscenesdriving.utils.data_classes import LidarSegPointCloud
 
 
 class LidarSegEvalStratified(LidarSegEval):
     """
     Extends the LidarSegEval class to provide an evaluation which is stratified by radial distance from the ego lidar.
     """
-    def __init__(self, nusc: NuScenes,
+    def __init__(self, nusc: NuScenesDrivIng,
                  results_folder: str,
                  output_dir: str,
                  eval_set: str,
@@ -231,7 +231,7 @@ class LidarSegEvalStratified(LidarSegEval):
         return pc
 
 
-def visualize_semantic_differences_bev(nusc: NuScenes,
+def visualize_semantic_differences_bev(nusc: NuScenesDrivIng,
                                        sample_token: str,
                                        lidarseg_preds_folder: str = None,
                                        axes_limit: float = 40,
@@ -322,7 +322,7 @@ if __name__ == '__main__':
     version_ = args.version
     verbose_ = args.verbose
 
-    nusc_ = NuScenes(version=version_, dataroot=dataroot_, verbose=verbose_)
+    nusc_ = NuScenesDrivIng(version=version_, dataroot=dataroot_, verbose=verbose_)
 
     evaluator = LidarSegEvalStratified(nusc_,
                                        result_path_,

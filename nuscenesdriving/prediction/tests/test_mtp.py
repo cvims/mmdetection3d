@@ -5,8 +5,8 @@ try:
 except ModuleNotFoundError:
     raise unittest.SkipTest('Skipping test as torch was not found!')
 
-from nuscenes.prediction.models import backbone
-from nuscenes.prediction.models import mtp
+from nuscenesdriving.prediction.models import backbone
+from nuscenesdriving.prediction.models import mtp
 
 
 class TestMTP(unittest.TestCase):

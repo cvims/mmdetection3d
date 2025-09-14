@@ -14,13 +14,13 @@ from shutil import copyfile
 import numpy as np
 from tqdm import tqdm
 
-from nuscenes.nuscenes import NuScenes
-from nuscenes.panoptic.panoptic_utils import STUFF_START_CLASS_ID
-from nuscenes.utils.data_classes import LidarSegPointCloud
-from nuscenes.utils.geometry_utils import points_in_box
+from nuscenesdriving.nuscenesdriving import NuScenesDrivIng
+from nuscenesdriving.panoptic.panoptic_utils import STUFF_START_CLASS_ID
+from nuscenesdriving.utils.data_classes import LidarSegPointCloud
+from nuscenesdriving.utils.geometry_utils import points_in_box
 
 
-def generate_panoptic_labels(nusc: NuScenes, out_dir: str, verbose: bool = False) -> None:
+def generate_panoptic_labels(nusc: NuScenesDrivIng, out_dir: str, verbose: bool = False) -> None:
     """
     Generate Panoptic nuScenes ground truth labels.
     :param nusc: NuScenes instance.
@@ -115,7 +115,7 @@ def main():
     args = parser.parse_args()
     out_dir = args.out_dir if args.out_dir is not None else f'Panoptic-nuScenes-{args.version}'
     print(f'Start panoptic ground truths generation... \nArguments: {args}')
-    nusc = NuScenes(version=args.version, dataroot=args.dataroot, verbose=args.verbose)
+    nusc = NuScenesDrivIng(version=args.version, dataroot=args.dataroot, verbose=args.verbose)
     generate_panoptic_labels(nusc=nusc, out_dir=out_dir, verbose=args.verbose)
     print(f'Panoptic ground truths saved at {args.out_dir}. \nFinished panoptic ground truth generation.')
 

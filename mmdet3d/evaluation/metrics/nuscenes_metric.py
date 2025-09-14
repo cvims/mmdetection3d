@@ -10,9 +10,9 @@ import torch
 from mmengine import Config, load
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
-from nuscenes.eval.detection.config import config_factory
-from nuscenes.eval.detection.data_classes import DetectionConfig
-from nuscenes.utils.data_classes import Box as NuScenesBox
+from nuscenesdriving.eval.detection.config import config_factory
+from nuscenesdriving.eval.detection.data_classes import DetectionConfig
+from nuscenesdriving.utils.data_classes import Box as NuScenesBox
 
 from mmdet3d.models.layers import box3d_multiclass_nms
 from mmdet3d.registry import METRICS
