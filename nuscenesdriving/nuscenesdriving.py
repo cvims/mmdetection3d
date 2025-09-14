@@ -579,7 +579,7 @@ class NuScenesDrivIng:
                      out_path: str = None) -> None:
         self.explorer.render_scene(scene_token, freq, imsize, out_path)
 
-    def render_scene_channel(self, scene_token: str, channel: str = 'CAM_FRONT', freq: float = 10,
+    def render_scene_channel(self, scene_token: str, channel: str = 'front_left_camera', freq: float = 10,
                              imsize: Tuple[float, float] = (640, 360), out_path: str = None) -> None:
         self.explorer.render_scene_channel(scene_token, channel=channel, freq=freq, imsize=imsize, out_path=out_path)
 
@@ -974,8 +974,8 @@ class NuScenesDrivIngExplorer:
     def render_pointcloud_in_image(self,
                                    sample_token: str,
                                    dot_size: int = 5,
-                                   pointsensor_channel: str = 'LIDAR_TOP',
-                                   camera_channel: str = 'CAM_FRONT',
+                                   pointsensor_channel: str = 'middle_lidar',
+                                   camera_channel: str = 'front_left_camera',
                                    out_path: str = None,
                                    render_intensity: bool = False,
                                    show_lidarseg: bool = False,
@@ -990,7 +990,7 @@ class NuScenesDrivIngExplorer:
         :param sample_token: Sample token.
         :param dot_size: Scatter plot dot size.
         :param pointsensor_channel: RADAR or LIDAR channel name, e.g. 'LIDAR_TOP'.
-        :param camera_channel: Camera channel name, e.g. 'CAM_FRONT'.
+        :param camera_channel: Camera channel name, e.g. 'front_left_camera'.
         :param out_path: Optional path to save the rendered figure to disk.
         :param render_intensity: Whether to render lidar intensity instead of point depth.
         :param show_lidarseg: Whether to render lidarseg labels instead of point depth.
@@ -1131,12 +1131,13 @@ class NuScenesDrivIngExplorer:
             if show_lidarseg or show_panoptic:
                 sd_record = self.nusc.get('sample_data', sd_token)
                 sensor_channel = sd_record['channel']
-                valid_channels = ['CAM_FRONT_LEFT', 'CAM_FRONT', 'CAM_FRONT_RIGHT',
-                                  'CAM_BACK_LEFT', 'CAM_BACK', 'CAM_BACK_RIGHT']
+                valid_channels = ['front_left_camera', 'front_right_camera',
+                                  'back_right_camera', 'back_left_camera',
+                                  'left_camera', 'right_camera']
                 assert sensor_channel in valid_channels, 'Input camera channel {} not valid.'.format(sensor_channel)
 
                 self.render_pointcloud_in_image(record['token'],
-                                                pointsensor_channel='LIDAR_TOP',
+                                                pointsensor_channel='middle_lidar',
                                                 camera_channel=sensor_channel,
                                                 show_lidarseg=show_lidarseg,
                                                 filter_lidarseg_labels=filter_lidarseg_labels,
@@ -1705,7 +1706,7 @@ class NuScenesDrivIngExplorer:
 
     def render_scene_channel(self,
                              scene_token: str,
-                             channel: str = 'CAM_FRONT',
+                             channel: str = 'front_left_camera',
                              freq: float = 10,
                              imsize: Tuple[float, float] = (640, 360),
                              out_path: str = None) -> None:
@@ -1717,8 +1718,9 @@ class NuScenesDrivIngExplorer:
         :param imsize: Size of image to render. The larger the slower this will run.
         :param out_path: Optional path to write a video file of the rendered frames.
         """
-        valid_channels = ['CAM_FRONT_LEFT', 'CAM_FRONT', 'CAM_FRONT_RIGHT',
-                          'CAM_BACK_LEFT', 'CAM_BACK', 'CAM_BACK_RIGHT']
+        valid_channels = ['front_left_camera', 'front_right_camera',
+                          'back_right_camera', 'back_left_camera',
+                          'left_camera', 'right_camera']
 
         assert imsize[0] / imsize[1] == 16 / 9, "Error: Aspect ratio should be 16/9."
         assert channel in valid_channels, 'Error: Input channel {} not valid.'.format(channel)
@@ -1986,8 +1988,9 @@ class NuScenesDrivIngExplorer:
 
         assert hasattr(self.nusc, gt_from), f'Error: nuScenesDrivIng-{gt_from} not installed!'
 
-        valid_channels = ['CAM_FRONT_LEFT', 'CAM_FRONT', 'CAM_FRONT_RIGHT',
-                          'CAM_BACK_LEFT', 'CAM_BACK', 'CAM_BACK_RIGHT']
+        valid_channels = ['front_left_camera', 'front_right_camera',
+                          'back_right_camera', 'back_left_camera',
+                          'left_camera', 'right_camera']
         assert channel in valid_channels, 'Error: Input camera channel {} not valid.'.format(channel)
         assert imsize[0] / imsize[1] == 16 / 9, 'Error: Aspect ratio should be 16/9.'
 
@@ -2144,15 +2147,15 @@ class NuScenesDrivIngExplorer:
 
         # Set some display parameters.
         layout = {
-            'CAM_FRONT_LEFT': (0, 0),
-            'CAM_FRONT': (imsize[0], 0),
-            'CAM_FRONT_RIGHT': (2 * imsize[0], 0),
-            'CAM_BACK_LEFT': (0, imsize[1]),
-            'CAM_BACK': (imsize[0], imsize[1]),
-            'CAM_BACK_RIGHT': (2 * imsize[0], imsize[1]),
+            'front_left_camera': (0, 0),
+            'front_right_camera': (imsize[0], 0),
+            'back_right_camera': (2 * imsize[0], 0),
+            'back_left_camera': (0, imsize[1]),
+            'left_camera': (imsize[0], imsize[1]),
+            'right_camera': (2 * imsize[0], imsize[1]),
         }
 
-        horizontal_flip = ['CAM_BACK_LEFT', 'CAM_BACK', 'CAM_BACK_RIGHT']  # Flip these for aesthetic reasons.
+        horizontal_flip = ['back_left_camera', 'back_right_camera']  # Flip these for aesthetic reasons.
 
         if verbose:
             window_name = '{} {labels_type} (Space to pause, ESC to exit)'.format(

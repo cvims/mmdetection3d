@@ -56,8 +56,8 @@ from nuscenesdriving.utils.splits import create_splits_logs
 class KittiConverter:
     def __init__(self,
                  nusc_kitti_dir: str = '~/nusc_kitti',
-                 cam_name: str = 'CAM_FRONT',
-                 lidar_name: str = 'LIDAR_TOP',
+                 cam_name: str = 'front_left_camera',
+                 lidar_name: str = 'middle_lidar',
                  image_count: int = 10,
                  nusc_version: str = 'v1.0-mini',
                  split: str = 'mini_train'):

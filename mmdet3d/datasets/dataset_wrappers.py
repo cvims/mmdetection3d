@@ -89,6 +89,12 @@ class CBGSDataset:
 
         sample_indices = []
 
+        empty_indices = [key for key, val in class_distribution.items() if val == 0.0]
+
+        for empty_idx in empty_indices:
+            del class_distribution[empty_idx]
+            del class_sample_idxs[empty_idx]
+
         frac = 1.0 / len(classes)
         ratios = [frac / v for v in class_distribution.values()]
         for cls_inds, ratio in zip(list(class_sample_idxs.values()), ratios):

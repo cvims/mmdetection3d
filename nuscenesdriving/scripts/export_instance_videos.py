@@ -104,8 +104,9 @@ def extract_camera_key_from_filename(filename: str) -> str:
     camera_name = filename.split('/')[1]
 
     # Validate the camera name is valid.
-    camera_names = ['CAM_BACK', 'CAM_BACK_LEFT', 'CAM_BACK_RIGHT',
-                    'CAM_FRONT', 'CAM_FRONT_LEFT', 'CAM_FRONT_RIGHT']
+    camera_names = ['front_left_camera', 'front_right_camera',
+                    'back_right_camera', 'back_left_camera',
+                    'left_camera', 'right_camera']
     assert (camera_name in camera_names), "Invalid camera name: {} from path: {}".format(
         camera_name, filename)
 

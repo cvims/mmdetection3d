@@ -754,7 +754,7 @@ def global_nusc_box_to_cam(info: dict, boxes: List[NuScenesBox],
         if radius > det_range:
             continue
         # Move box to camera coord system
-        cam2ego = np.array(info['images']['CAM_FRONT']['cam2ego'])
+        cam2ego = np.array(info['images']['front_left_camera']['cam2ego'])
         box.translate(-cam2ego[:3, 3])
         box.rotate(
             pyquaternion.Quaternion(matrix=cam2ego, rtol=1e-05,

@@ -11,11 +11,13 @@ from mmengine.runner import Runner
 
 from mmdet3d.utils import replace_ceph_backend
 
-
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a 3D detector')
     parser.add_argument('config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
+    # parser.add_argument('--config', default=r'projects/BEVFusion/configs/bevfusion_lidar-cam_voxel0075_second_secfpn_8xb4-cyclic-20e_nus-driving-3d.py', help='train config file path')
+    # parser.add_argument('--work-dir', default=r'work_dirs/bev_fusion', help='the dir to save logs and models')
+    
     parser.add_argument(
         '--amp',
         action='store_true',

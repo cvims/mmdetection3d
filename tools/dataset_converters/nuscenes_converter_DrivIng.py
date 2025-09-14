@@ -384,7 +384,7 @@ def export_2d_annotation(root_path, info_path, version, mono3d=True):
             (height, width, _) = mmcv.imread(cam_info['data_path']).shape
             coco_2d_dict['images'].append(
                 dict(
-                    file_name=cam_info['data_path'].split('data/nuscenes/')
+                    file_name=cam_info['data_path'].split('data/nuscenes-driving/')
                     [-1],
                     id=cam_info['sample_data_token'],
                     token=info['token'],

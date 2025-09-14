@@ -41,9 +41,10 @@ def export_scene_pointcloud(nusc: NuScenesDrivIng,
     """
 
     # Check inputs.
-    valid_channels = ['LIDAR_TOP', 'RADAR_FRONT', 'RADAR_FRONT_RIGHT', 'RADAR_FRONT_LEFT', 'RADAR_BACK_LEFT',
-                      'RADAR_BACK_RIGHT']
-    camera_channels = ['CAM_FRONT_LEFT', 'CAM_FRONT', 'CAM_FRONT_RIGHT', 'CAM_BACK_LEFT', 'CAM_BACK', 'CAM_BACK_RIGHT']
+    valid_channels = ['middle_lidar']
+    camera_channels = ['front_left_camera', 'front_right_camera',
+                        'back_right_camera', 'back_left_camera',
+                        'left_camera', 'right_camera']
     assert channel in valid_channels, 'Input channel {} not valid.'.format(channel)
 
     # Get records from DB.
