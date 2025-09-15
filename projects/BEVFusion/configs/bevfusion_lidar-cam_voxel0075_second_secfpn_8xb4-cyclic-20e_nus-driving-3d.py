@@ -11,6 +11,8 @@ point_cloud_range = [-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]
 input_modality = dict(use_lidar=True, use_camera=True)
 backend_args = None
 
+epochs = 30
+
 model = dict(
     type='BEVFusion',
     data_preprocessor=dict(
@@ -90,7 +92,7 @@ train_pipeline = [
     dict(
         type='ImageAug3D',
         final_dim=[256, 704],
-        resize_lim=[0.38, 0.55],
+        resize_lim=[0.44, 0.55],
         bot_pct_lim=[0.0, 0.0],
         rot_lim=[-5.4, 5.4],
         rand_flip=True,
@@ -192,8 +194,8 @@ param_scheduler = [
     dict(
         type='CosineAnnealingLR',
         begin=0,
-        T_max=6,
-        end=6,
+        T_max=epochs,
+        end=epochs,
         by_epoch=True,
         eta_min_ratio=1e-4,
         convert_to_iter_based=True),
@@ -211,13 +213,13 @@ param_scheduler = [
         type='CosineAnnealingMomentum',
         eta_min=1,
         begin=2.4,
-        end=6,
+        end=epochs,
         by_epoch=True,
         convert_to_iter_based=True)
 ]
 
 # runtime settings
-train_cfg = dict(by_epoch=True, max_epochs=100, val_interval=10)
+train_cfg = dict(by_epoch=True, max_epochs=epochs, val_interval=5)
 val_cfg = dict()
 test_cfg = dict()
 
@@ -230,7 +232,7 @@ optim_wrapper = dict(
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
 #   - `base_batch_size` = (8 GPUs) x (4 samples per GPU).
-auto_scale_lr = dict(enable=False, base_batch_size=8)
+auto_scale_lr = dict(enable=False, base_batch_size=32)
 
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),

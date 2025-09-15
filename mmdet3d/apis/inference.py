@@ -230,7 +230,10 @@ def inference_multi_modality_detector(model: nn.Module,
     box_type_3d, box_mode_3d = \
         get_box_type(cfg.test_dataloader.dataset.box_type_3d)
 
-    data_list = mmengine.load(ann_file)['data_list']
+    if not hasattr(ann_file, 'read') or not isinstance(ann_file, Path):
+        data_list = ann_file['data_list']
+    else:
+        data_list = mmengine.load(ann_file)['data_list']
 
     data = []
     for index, pcd in enumerate(pcds):
@@ -250,6 +253,7 @@ def inference_multi_modality_detector(model: nn.Module,
                 box_type_3d=box_type_3d,
                 box_mode_3d=box_mode_3d)
             data_info['images'][cam_type]['img_path'] = img
+            data_['images'] = {cam_type: data_info['images'][cam_type]}
             if 'cam2img' in data_info['images'][cam_type]:
                 # The data annotation in SRUNRGBD dataset does not contain
                 # `cam2img`
@@ -261,10 +265,18 @@ def inference_multi_modality_detector(model: nn.Module,
                 if 'lidar2img' in data_info['images'][cam_type]:
                     data_['lidar2img'] = np.array(
                         data_info['images'][cam_type]['lidar2img'])
+                # elif 'lidar2cam' in data_info['images'][cam_type] and 'cam2img' in data_info['images'][cam_type]:
+                #     # Compose lidar2img from lidar2cam and cam2img
+                #     lidar2cam = np.array(data_info['images'][cam_type]['lidar2cam'])
+                #     cam2img = np.array(data_info['images'][cam_type]['cam2img'])
+                #     # lidar2img = cam2img @ lidar2cam (matrix multiplication)
+                #     lidar2_img = cam2img @ lidar2cam
+                #     data_['lidar2img'] = lidar2_img
             # Depth to image conversion for SUNRGBD dataset
             elif box_mode_3d == Box3DMode.DEPTH:
                 data_['depth2img'] = np.array(
                     data_info['images'][cam_type]['depth2img'])
+            
         else:
             assert osp.isdir(img), f'{img} must be a file directory'
             for _, img_info in data_info['images'].items():

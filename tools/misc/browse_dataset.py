@@ -12,13 +12,14 @@ from mmdet3d.utils import replace_ceph_backend
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Browse a dataset')
-    parser.add_argument('config', help='train config file path')
+    # parser.add_argument('config', help='train config file path')
+    parser.add_argument('--config', default=r'work_dirs/bev_fusion/bevfusion_lidar-cam_voxel0075_second_secfpn_8xb4-cyclic-20e_nus-driving-3d.py')
     parser.add_argument(
         '--output-dir',
-        default=None,
+        default=r'test_browse',
         type=str,
         help='If there is no display interface, you can save it')
-    parser.add_argument('--not-show', default=False, action='store_true')
+    parser.add_argument('--show', default=False, action='store_true')
     parser.add_argument(
         '--show-interval',
         type=float,
@@ -31,6 +32,7 @@ def parse_args():
             'mono_det', 'multi-view_det', 'lidar_det', 'lidar_seg',
             'multi-modality_det'
         ],
+        default='multi-modality_det',
         help='Determine the visualization method depending on the task.')
     parser.add_argument(
         '--aug',
@@ -133,13 +135,13 @@ def main():
         o3d_save_path = osp.join(args.output_dir, f'pc_{i}.png') if (
             args.output_dir is not None
             and vis_task in ['lidar_det', 'lidar_seg', 'multi-modality_det']
-            and not args.not_show) else None
+            and args.show) else None
 
         visualizer.add_datasample(
             '3d visualzier',
             data_input,
             data_sample=data_sample,
-            show=not args.not_show,
+            show=args.show,
             wait_time=args.show_interval,
             out_file=out_file,
             o3d_save_path=o3d_save_path,

@@ -26,7 +26,7 @@ def make_cuda_ext(name,
             '-gencode=arch=compute_75,code=sm_75',
             '-gencode=arch=compute_80,code=sm_80',
             '-gencode=arch=compute_86,code=sm_86',
-            '-gencode=arch=compute_89,code=sm_89'
+            #'-gencode=arch=compute_89,code=sm_89'
         ]
         sources += sources_cuda
     else:

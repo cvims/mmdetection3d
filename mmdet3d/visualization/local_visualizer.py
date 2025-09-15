@@ -997,7 +997,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         ]:
             self.o3d_vis = self._initialize_o3d_vis(show=show)
 
-        draw_gt = True
         if draw_gt and data_sample is not None:
             if 'gt_instances_3d' in data_sample:
                 gt_data_3d = self._draw_instances_3d(
@@ -1022,17 +1021,9 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                                        data_sample.gt_pts_seg, palette,
                                        keep_index)
 
+        draw_pred = False
         if draw_pred and data_sample is not None:
             if 'pred_instances_3d' in data_sample:
-                import torch
-                fake_3d_box = LiDARInstance3DBoxes(
-                    [[0, 0, 0, 1, 1, 1, 0]]
-                )
-                labels_3d = torch.tensor([0], device="cuda:0", dtype=torch.int64)
-                scores_3d = torch.tensor([1], device="cuda:0")
-                data_sample.pred_instances_3d.bboxes_3d = fake_3d_box
-                data_sample.pred_instances_3d.labels_3d = labels_3d
-                data_sample.pred_instances_3d.scores_3d = scores_3d
                 pred_instances_3d = data_sample.pred_instances_3d
                 # .cpu can not be used for BaseInstance3DBoxes
                 # so we need to use .to('cpu')
