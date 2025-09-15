@@ -19,7 +19,7 @@ def parse_args():
     parser.add_argument(
         '--cam-type',
         type=str,
-        default='CAM_FRONT',
+        default='front_left_camera',
         help='choose camera type to inference')
     parser.add_argument(
         '--score-thr', type=float, default=0.0, help='bbox score threshold')

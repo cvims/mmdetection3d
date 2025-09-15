@@ -132,11 +132,7 @@ class BEVLoadMultiViewImageFromFiles(LoadMultiViewImageFromFiles):
         # Support multi-view images with different shapes
         # TODO: record the origin shape and padded shape
         filename, cam2img, lidar2cam, cam2lidar, lidar2img = [], [], [], [], []
-        for cam_name, cam_item in results['images'].items():
-            if not os.path.exists(cam_item['img_path']):
-                # use lidar base path
-                lidar_data_path = os.path.dirname(results['lidar_path'])
-                cam_item['img_path'] = os.path.join(lidar_data_path, '..', cam_name, cam_item['img_path'])
+        for _, cam_item in results['images'].items():
             filename.append(cam_item['img_path'])
             lidar2cam.append(cam_item['lidar2cam'])
 
