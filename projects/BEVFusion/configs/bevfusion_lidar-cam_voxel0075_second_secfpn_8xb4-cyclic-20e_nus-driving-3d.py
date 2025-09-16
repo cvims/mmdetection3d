@@ -11,7 +11,7 @@ point_cloud_range = [-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]
 input_modality = dict(use_lidar=True, use_camera=True)
 backend_args = None
 
-epochs = 30
+epochs = 25
 
 model = dict(
     type='BEVFusion',
@@ -113,7 +113,7 @@ train_pipeline = [
         type='GridMask',
         use_h=True,
         use_w=True,
-        max_epoch=6,
+        max_epoch=epochs,
         rotate=1,
         offset=False,
         ratio=0.5,

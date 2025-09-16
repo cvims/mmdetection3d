@@ -8,7 +8,8 @@ optim_wrapper = dict(
     clip_grad=dict(max_norm=35, norm_type=2))
 
 # training schedule for 2x
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=500, val_interval=250)
+epochs = 50
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=epochs, val_interval=25)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -19,13 +20,13 @@ param_scheduler = [
         start_factor=1.0 / 1000,
         by_epoch=False,
         begin=0,
-        end=1000),
+        end=epochs),
     dict(
         type='MultiStepLR',
         begin=0,
-        end=24,
+        end=epochs,
         by_epoch=True,
-        milestones=[20, 23],
+        milestones=[20, epochs-1],
         gamma=0.1)
 ]
 

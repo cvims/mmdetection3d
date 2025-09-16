@@ -1,5 +1,5 @@
 _base_ = [
-    '../../../configs/_base_/datasets/nus-3d.py',
+    '../../../configs/_base_/datasets/nus-driving-3d.py',
     '../../../configs/_base_/default_runtime.py',
     '../../../configs/_base_/schedules/cyclic-20e.py'
 ]
@@ -15,10 +15,10 @@ img_norm_cfg = dict(
     mean=[103.530, 116.280, 123.675],
     std=[57.375, 57.120, 58.395],
     to_rgb=False)
-# For nuScenes we usually do 10-class detection
+# For nuScenesDrivIng we usually do 8-class detection
 class_names = [
-    'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
-    'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
+    'car', 'truck', 'bus', 'trailer', 'barrier',
+    'motorcycle', 'bicycle', 'pedestrian'
 ]
 metainfo = dict(classes=class_names)
 
@@ -46,7 +46,7 @@ model = dict(
         type='CPFPN', in_channels=[768, 1024], out_channels=256, num_outs=2),
     pts_bbox_head=dict(
         type='PETRHead',
-        num_classes=10,
+        num_classes=len(class_names),
         in_channels=256,
         num_query=900,
         LID=True,
@@ -87,7 +87,7 @@ model = dict(
             pc_range=point_cloud_range,
             max_num=300,
             voxel_size=voxel_size,
-            num_classes=10),
+            num_classes=len(class_names)),
         positional_encoding=dict(
             type='SinePositionalEncoding3D', num_feats=128, normalize=True),
         loss_cls=dict(
@@ -114,13 +114,13 @@ model = dict(
                 ),  # Fake cost. Just to be compatible with DETR head.
                 pc_range=point_cloud_range))))
 
-dataset_type = 'NuScenesDataset'
-data_root = 'data/nuscenes/'
+dataset_type = 'NuScenesDrivIngDataset'
+data_root = 'data/nuscenes-driving/'
 backend_args = None
 
 db_sampler = dict(
     data_root=data_root,
-    info_path=data_root + 'nuscenes_dbinfos_train.pkl',
+    info_path=data_root + 'nuscenes-driving_dbinfos_train.pkl',
     rate=1.0,
     prepare=dict(
         filter_by_difficulty=[-1],
@@ -129,8 +129,6 @@ db_sampler = dict(
             truck=5,
             bus=5,
             trailer=5,
-            construction_vehicle=5,
-            traffic_cone=5,
             barrier=5,
             motorcycle=5,
             bicycle=5,
@@ -139,14 +137,12 @@ db_sampler = dict(
     sample_groups=dict(
         car=2,
         truck=3,
-        construction_vehicle=7,
         bus=4,
         trailer=6,
         barrier=2,
         motorcycle=6,
         bicycle=6,
-        pedestrian=2,
-        traffic_cone=2),
+        pedestrian=2),
     points_loader=dict(
         type='LoadPointsFromFile',
         coord_type='LIDAR',
@@ -154,13 +150,14 @@ db_sampler = dict(
         use_dim=[0, 1, 2, 3, 4],
         backend_args=backend_args),
     backend_args=backend_args)
+
 ida_aug_conf = {
-    'resize_lim': (0.47, 0.625),
+    'resize_lim': (0.5, 0.65),
     'final_dim': (320, 800),
     'bot_pct_lim': (0.0, 0.0),
     'rot_lim': (0.0, 0.0),
-    'H': 900,
-    'W': 1600,
+    'H': 1080,
+    'W': 1920,
     'rand_flip': True,
 }
 
@@ -204,18 +201,18 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=1,
+    batch_size=4,
     num_workers=4,
     dataset=dict(
         type=dataset_type,
         data_prefix=dict(
-            pts='samples/LIDAR_TOP',
-            CAM_FRONT='samples/CAM_FRONT',
-            CAM_FRONT_LEFT='samples/CAM_FRONT_LEFT',
-            CAM_FRONT_RIGHT='samples/CAM_FRONT_RIGHT',
-            CAM_BACK='samples/CAM_BACK',
-            CAM_BACK_RIGHT='samples/CAM_BACK_RIGHT',
-            CAM_BACK_LEFT='samples/CAM_BACK_LEFT'),
+            pts='samples/middle_lidar',
+            front_left_camera='samples/front_left_camera',
+            front_right_camera='samples/front_right_camera',
+            back_left_camera='samples/back_left_camera',
+            back_right_camera='samples/back_right_camera',
+            left_camera='samples/left_camera',
+            right_camera='samples/right_camera'),
         pipeline=train_pipeline,
         box_type_3d='LiDAR',
         metainfo=metainfo,
@@ -227,13 +224,13 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_prefix=dict(
-            pts='samples/LIDAR_TOP',
-            CAM_FRONT='samples/CAM_FRONT',
-            CAM_FRONT_LEFT='samples/CAM_FRONT_LEFT',
-            CAM_FRONT_RIGHT='samples/CAM_FRONT_RIGHT',
-            CAM_BACK='samples/CAM_BACK',
-            CAM_BACK_RIGHT='samples/CAM_BACK_RIGHT',
-            CAM_BACK_LEFT='samples/CAM_BACK_LEFT'),
+            pts='samples/middle_lidar',
+            front_left_camera='samples/front_left_camera',
+            front_right_camera='samples/front_right_camera',
+            back_left_camera='samples/back_left_camera',
+            back_right_camera='samples/back_right_camera',
+            left_camera='samples/left_camera',
+            right_camera='samples/right_camera'),
         pipeline=test_pipeline,
         box_type_3d='LiDAR',
         metainfo=metainfo,
@@ -245,13 +242,13 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_prefix=dict(
-            pts='samples/LIDAR_TOP',
-            CAM_FRONT='samples/CAM_FRONT',
-            CAM_FRONT_LEFT='samples/CAM_FRONT_LEFT',
-            CAM_FRONT_RIGHT='samples/CAM_FRONT_RIGHT',
-            CAM_BACK='samples/CAM_BACK',
-            CAM_BACK_RIGHT='samples/CAM_BACK_RIGHT',
-            CAM_BACK_LEFT='samples/CAM_BACK_LEFT'),
+            pts='samples/middle_lidar',
+            front_left_camera='samples/front_left_camera',
+            front_right_camera='samples/front_right_camera',
+            back_left_camera='samples/back_left_camera',
+            back_right_camera='samples/back_right_camera',
+            left_camera='samples/left_camera',
+            right_camera='samples/right_camera'),
         pipeline=test_pipeline,
         box_type_3d='LiDAR',
         metainfo=metainfo,
@@ -273,8 +270,18 @@ optim_wrapper = dict(
     }),
     clip_grad=dict(max_norm=35, norm_type=2))
 
-num_epochs = 24
+num_epochs_training = 50
+val_epoch_interval = 25
 
+lr = 1e-4
+# This schedule is mainly used by models on nuScenes dataset
+# max_norm=10 is better for SECOND
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(type='AdamW', lr=lr, weight_decay=0.01),
+    clip_grad=dict(max_norm=35, norm_type=2))
+
+# learning rate
 param_scheduler = [
     dict(
         type='LinearLR',
@@ -284,85 +291,25 @@ param_scheduler = [
         by_epoch=False),
     dict(
         type='CosineAnnealingLR',
-        T_max=num_epochs,
+        T_max=num_epochs_training,
         by_epoch=True,
     )
 ]
 
-train_cfg = dict(max_epochs=num_epochs, val_interval=num_epochs)
+train_cfg = dict(max_epochs=num_epochs_training, val_interval=val_epoch_interval)
 
 find_unused_parameters = False
 
 # pretrain_path can be found here:
 # https://drive.google.com/file/d/1ABI5BoQCkCkP4B0pO5KBJ3Ni0tei0gZi/view
-load_from = '/mnt/d/fcos3d_vovnet_imgbackbone-remapped.pth'
+load_from = 'work_dirs/pretrained/imgbackbone_fcos3d_vovnet/fcos3d_vovnet_imgbackbone-remapped.pth'
 resume = False
 
-# --------------Original---------------
-# mAP: 0.3778
-# mATE: 0.7463
-# mASE: 0.2718
-# mAOE: 0.4883
-# mAVE: 0.9062
-# mAAE: 0.2123
-# NDS: 0.4264
-# Eval time: 242.1s
-
-# Per-class results:
-# Object Class    AP      ATE     ASE     AOE     AVE     AAE
-# car     0.556   0.555   0.153   0.091   0.917   0.216
-# truck   0.330   0.805   0.218   0.119   0.859   0.250
-# bus     0.412   0.789   0.205   0.162   2.067   0.337
-# trailer 0.221   0.976   0.233   0.663   0.797   0.146
-# construction_vehicle    0.094   1.096   0.493   1.145   0.190   0.349
-# pedestrian      0.453   0.688   0.289   0.636   0.549   0.235
-# motorcycle      0.368   0.690   0.256   0.622   1.417   0.149
-# bicycle 0.341   0.609   0.270   0.812   0.455   0.017
-# traffic_cone    0.531   0.582   0.320   nan     nan     nan
-# barrier 0.472   0.673   0.281   0.145   nan     nan
-
-# --------------Refactored in mmdet3d v1.0---------------
-# mAP: 0.3827
-# mATE: 0.7375
-# mASE: 0.2703
-# mAOE: 0.4799
-# mAVE: 0.8699
-# mAAE: 0.2038
-# NDS: 0.4352
-# Eval time: 124.8s
-
-# Per-class results:
-# Object Class	  AP	  ATE	  ASE	  AOE	  AVE	  AAE
-# car	  0.574	  0.519	  0.150	  0.087	  0.865	  0.206
-# truck	  0.349	  0.773	  0.213	  0.117	  0.855	  0.220
-# bus	  0.423	  0.781	  0.204	  0.122	  1.902	  0.319
-# trailer 0.219	  1.034	  0.231	  0.608	  0.830	  0.149
-# construction_vehicle	  0.084	  1.062	  0.486	  1.245	  0.172	  0.360
-# pedestrian	  0.452	  0.681	  0.293	  0.646	  0.529	  0.231
-# motorcycle	  0.378	  0.670	  0.250	  0.567	  1.334	  0.130
-# bicycle	      0.347	  0.639	  0.264	  0.788	  0.472	  0.016
-# traffic_cone	  0.538	  0.553	  0.325	  nan	  nan	  nan
-# barrier	      0.464	  0.662	 0.287	  0.137	  nan	  nan
-
-# --------------Refactored in mmdet3d v1.1---------------
-# mAP: 0.3830
-# mATE: 0.7547
-# mASE: 0.2683
-# mAOE: 0.4948
-# mAVE: 0.8331
-# mAAE: 0.2056
-# NDS: 0.4358
-# Eval time: 118.7s
-
-# Per-class results:
-# Object Class	  AP	  ATE	  ASE	  AOE	  AVE	  AAE
-# car	  0.567	  0.538	  0.151	  0.086	  0.873	  0.212
-# truck	  0.341	  0.785	  0.213	  0.113	  0.821	  0.234
-# bus	  0.426	  0.766	  0.201	  0.128	  1.813	  0.343
-# trailer 0.216	  1.116	  0.227	  0.649	  0.640	  0.122
-# construction_vehicle	  0.093	  1.118	  0.483	  1.292	  0.217	  0.330
-# pedestrian	  0.453	  0.685	  0.293	  0.644	  0.535	  0.238
-# motorcycle	  0.374	  0.700	  0.253	  0.624	  1.291	  0.154
-# bicycle	      0.345	  0.622	  0.262	  0.775	  0.475	  0.011
-# traffic_cone	  0.539	  0.557	  0.319	  nan	  nan	  nan
-# barrier	      0.476	  0.661	  0.279	  0.142	  nan	  nan
+default_hooks = dict(
+    timer=dict(type='IterTimerHook'),
+    logger=dict(type='LoggerHook', interval=1, log_metric_by_epoch=True),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    checkpoint=dict(type='CheckpointHook', interval=5, by_epoch=True),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    visualization=dict(type='Det3DVisualizationHook')
+)
